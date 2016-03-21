@@ -23,10 +23,7 @@ import java.util.List;
  */
 public class GameState implements Comparable<GameState> {
 
-    private int requiredGold;
-    private int requiredWood;
-    private int currentGold;
-    private int currentWood;
+    private StateTracker stateTracker;
 
     /**
      * Construct a GameState from a stateview object. This is used to construct the initial search node. All other
@@ -39,7 +36,7 @@ public class GameState implements Comparable<GameState> {
      * @param buildPeasants True if the BuildPeasant action should be considered
      */
     public GameState(State.StateView state, int playernum, int requiredGold, int requiredWood, boolean buildPeasants) {
-        // TODO: Implement me!
+        stateTracker = new StateTracker(state, playernum, requiredGold, requiredWood, buildPeasants);
     }
 
     /**
@@ -50,7 +47,7 @@ public class GameState implements Comparable<GameState> {
      * @return true if the goal conditions are met in this instance of game state.
      */
     public boolean isGoal() {
-        return requiredGold == currentGold && requiredWood == currentWood;
+        return stateTracker.isGoal();
     }
 
     /**
