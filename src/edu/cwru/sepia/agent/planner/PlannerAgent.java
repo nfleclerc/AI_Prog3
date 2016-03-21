@@ -43,8 +43,8 @@ public class PlannerAgent extends Agent {
 
         if(plan == null) {
             System.err.println("No plan was found");
-            System.exit(1);
-            return null;
+            //System.exit(1);
+            //return null;
         }
 
         // write the plan to a text file
