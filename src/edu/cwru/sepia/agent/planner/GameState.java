@@ -23,6 +23,11 @@ import java.util.List;
  */
 public class GameState implements Comparable<GameState> {
 
+    private int requiredGold;
+    private int requiredWood;
+    private int currentGold;
+    private int currentWood;
+
     /**
      * Construct a GameState from a stateview object. This is used to construct the initial search node. All other
      * nodes should be constructed from the another constructor you create or by factory functions that you create.
@@ -45,8 +50,7 @@ public class GameState implements Comparable<GameState> {
      * @return true if the goal conditions are met in this instance of game state.
      */
     public boolean isGoal() {
-        // TODO: Implement me!
-        return false;
+        return requiredGold == currentGold && requiredWood == currentWood;
     }
 
     /**
