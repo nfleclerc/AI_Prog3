@@ -1,11 +1,11 @@
 <component name="libraryTable">
   <library name="Sepia">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../Sepia.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/Sepia.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/../Sepia.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/Sepia.jar!/" />
     </SOURCES>
   </library>
 </component>
