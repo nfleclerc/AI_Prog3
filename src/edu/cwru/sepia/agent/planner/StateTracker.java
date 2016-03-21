@@ -1,15 +1,9 @@
 package edu.cwru.sepia.agent.planner;
 
-import edu.cwru.sepia.action.Action;
-import edu.cwru.sepia.environment.model.state.ResourceNode;
 import edu.cwru.sepia.environment.model.state.State;
-import edu.cwru.sepia.environment.model.state.Unit;
-import edu.cwru.sepia.util.Direction;
-import edu.cwru.sepia.util.DistanceMetrics;
 
-import java.awt.*;
+
 import java.util.*;
-import java.util.List;
 
 /**
  * This class is used as a lightweight shell for pseudo-tracking an actual game state object
@@ -28,6 +22,7 @@ public class StateTracker {
     private Map<Integer, Position> peasants;
     private Map<Integer, Position> forests;
     private Map<Integer, Position> goldMines;
+    private Map<Integer, Position> townhalls;
 
     /**
      * This constructor initializes this state tracker using another state tracker
