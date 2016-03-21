@@ -39,6 +39,10 @@ public class GameState implements Comparable<GameState> {
         stateTracker = new StateTracker(state, playernum, requiredGold, requiredWood, buildPeasants);
     }
 
+    public StateTracker getStateTracker() {
+        return stateTracker;
+    }
+
     /**
      * Unlike in the first A* assignment there are many possible goal states. As long as the wood and gold requirements
      * are met the peasants can be at any location and the capacities of the resource locations can be anything. Use
