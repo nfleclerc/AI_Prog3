@@ -11,10 +11,14 @@ public class Move implements StripsAction {
     public boolean preconditionsMet(GameState state) {
         StateTracker stateTracker = state.getStateTracker();
         return false;
+        //peasant is idle
+        //place to move is not blocked
     }
 
     @Override
     public GameState apply(GameState state) {
         return null;
+        //peasant is not idle
+        //peasant moves towards the indicated position
     }
 }

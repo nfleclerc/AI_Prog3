@@ -1,6 +1,5 @@
 package edu.cwru.sepia.agent.planner.entities;
 
-import edu.cwru.sepia.action.Action;
 import edu.cwru.sepia.agent.planner.Position;
 import edu.cwru.sepia.environment.model.state.ResourceType;
 import edu.cwru.sepia.environment.model.state.Unit;
@@ -15,23 +14,18 @@ public class Peasant {
     private Position position;
     private int cargoAmount;
     private ResourceType cargoType;
-    private int currentProgress;
-    private Action currentAction;
 
     public Peasant(Unit.UnitView unit){
         id = unit.getID();
         position = new Position(unit.getXPosition(), unit.getYPosition());
         cargoAmount = unit.getCargoAmount();
         cargoType = unit.getCargoType();
-
     }
 
     public Peasant(Peasant peasant){
         id = peasant.id;
         position = new Position(peasant.position);
         cargoAmount = peasant.cargoAmount;
-        cargoType = peasant.cargoType;
-        currentProgress = peasant.currentProgress;
     }
 
     @Override
