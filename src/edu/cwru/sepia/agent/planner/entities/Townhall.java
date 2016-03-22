@@ -22,4 +22,7 @@ public class Townhall {
                 position.equals(((Townhall) o).position);
     }
 
+    public Position getPosition() {
+        return position;
+    }
 }

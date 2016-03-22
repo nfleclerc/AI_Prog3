@@ -14,6 +14,7 @@ public class Peasant {
     private Position position;
     private int cargoAmount;
     private ResourceType cargoType;
+    private boolean idle;
 
     public Peasant(Unit.UnitView unit){
         id = unit.getID();
@@ -31,8 +32,18 @@ public class Peasant {
     @Override
     public boolean equals(Object o) {
         return o instanceof Peasant &&
-                id == ((Peasant) o).id &&
-                position.equals(((Peasant) o).position);
+                id == ((Peasant) o).id;
     }
 
+    public int getCargoAmount() {
+        return cargoAmount;
+    }
+
+    public boolean isIdle() {
+        return idle;
+    }
+
+    public Position getPosition() {
+        return position;
+    }
 }

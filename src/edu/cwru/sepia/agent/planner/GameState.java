@@ -42,10 +42,10 @@ public class GameState implements Comparable<GameState> {
         this.stateTracker = new StateTracker(state, playernum, requiredGold, requiredWood, buildPeasants);
     }
 
-    public GameState(StateTracker stateTracker, GameState parent, StripsAction actionFromParentToThis){
+    public GameState(GameState parent, StripsAction actionFromParentToThis){
         this.parent = parent;
         this.actionFromParentToThis = actionFromParentToThis;
-        this.stateTracker = new StateTracker(stateTracker);
+        this.stateTracker = new StateTracker(parent.getStateTracker());
     }
 
     public StateTracker getStateTracker() {

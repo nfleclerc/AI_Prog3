@@ -17,6 +17,7 @@ public class Move implements StripsAction {
 
     @Override
     public GameState apply(GameState state) {
+        GameState childState = new GameState(state, this);
         return null;
         //peasant is not idle
         //peasant moves towards the indicated position

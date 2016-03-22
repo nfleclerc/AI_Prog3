@@ -1,13 +1,11 @@
 package edu.cwru.sepia.agent.planner;
 
-import edu.cwru.sepia.agent.planner.entities.Forest;
-import edu.cwru.sepia.agent.planner.entities.GoldMine;
-import edu.cwru.sepia.agent.planner.entities.Peasant;
-import edu.cwru.sepia.agent.planner.entities.Townhall;
+import edu.cwru.sepia.agent.planner.entities.*;
 import edu.cwru.sepia.environment.model.state.ResourceNode;
 import edu.cwru.sepia.environment.model.state.State;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -89,4 +87,18 @@ public class StateTracker {
     }
 
 
+    public List<Peasant> getPeasants() {
+        return peasants;
+    }
+
+    public List<Resource> getAllResources() {
+        List<Resource> resources = new ArrayList<>();
+        resources.addAll(goldMines);
+        resources.addAll(forests);
+        return resources;
+    }
+
+    public List<Townhall> getTownhalls() {
+        return townhalls;
+    }
 }
