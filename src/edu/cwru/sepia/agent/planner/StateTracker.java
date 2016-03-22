@@ -1,10 +1,16 @@
 package edu.cwru.sepia.agent.planner;
 
-
-
+import edu.cwru.sepia.agent.planner.entities.Forest;
+import edu.cwru.sepia.agent.planner.entities.GoldMine;
+import edu.cwru.sepia.agent.planner.entities.Peasant;
+import edu.cwru.sepia.agent.planner.entities.Townhall;
+import edu.cwru.sepia.environment.model.state.ResourceNode;
 import edu.cwru.sepia.environment.model.state.State;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 /**
  * This class is used as a lightweight shell for pseudo-tracking an actual game state object
@@ -17,22 +23,34 @@ public class StateTracker {
     private double yExtent;
     private int currentWood;
     private int currentGold;
-    private int requiredWood;
+    private int
+            requiredWood;
     private int requiredGold;
     private boolean buildPeasants;
-    private Map<Integer, Position> peasants;
-    private Map<Integer, Position> forests;
-    private Map<Integer, Position> goldMines;
-    private Map<Integer, Position> townhalls;
+    private List<Peasant> peasants = new ArrayList<>();
+    private List<GoldMine> goldMines = new ArrayList<>();
+    private List<Forest> forests = new ArrayList<>();
+    private List<Townhall> townhalls = new ArrayList<>();
 
     /**
      * This constructor initializes this state tracker using another state tracker
+     *
      * @param stateTracker The state tracker to represent by this tracker
      */
     public StateTracker(StateTracker stateTracker) {
-        xExtent = stateTracker.getXExtent();
-        yExtent = stateTracker.getYExtent();
-        turnNumber = stateTracker.getTurnNumber();
+        xExtent = stateTracker.xExtent;
+        yExtent = stateTracker.yExtent;
+        turnNumber = stateTracker.turnNumber;
+        playerNum = stateTracker.playerNum;
+        requiredGold = stateTracker.requiredGold;
+        requiredWood = stateTracker.requiredWood;
+        buildPeasants = stateTracker.buildPeasants;
+        currentWood = stateTracker.currentWood;
+        currentGold = stateTracker.currentGold;
+        peasants.addAll(stateTracker.peasants.stream().map(Peasant::new).collect(Collectors.toList()));
+        forests.addAll(stateTracker.forests.stream().map(Forest::new).collect(Collectors.toList()));
+        goldMines.addAll(stateTracker.goldMines.stream().map(GoldMine::new).collect(Collectors.toList()));
+        townhalls.addAll(stateTracker.townhalls.stream().map(Townhall::new).collect(Collectors.toList()));
     }
 
     public StateTracker(State.StateView state, int playerNum, int requiredGold, int requiredWood, boolean buildPeasants) {
@@ -45,21 +63,37 @@ public class StateTracker {
         this.buildPeasants = buildPeasants;
         currentGold = 0;
         currentWood = 0;
-    }
-
-    public int getTurnNumber() {
-        return turnNumber;
-    }
-
-    public double getXExtent() {
-        return xExtent;
-    }
-
-    public double getYExtent() {
-        return yExtent;
+        peasants.addAll(state.getAllUnits().stream().map(Peasant::new).collect(Collectors.toList()));
+        for (ResourceNode.ResourceView resource : state.getAllResourceNodes()) {
+            if (resource.getType() == ResourceNode.Type.GOLD_MINE) {
+                goldMines.add(new GoldMine(resource));
+            } else {
+                forests.add(new Forest(resource));
+            }
+        }
     }
 
     public boolean isGoal() {
         return requiredWood == currentWood && requiredGold == currentGold;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof StateTracker &&
+                playerNum == ((StateTracker) o).playerNum &&
+                turnNumber == ((StateTracker) o).turnNumber &&
+                xExtent == ((StateTracker) o).xExtent &&
+                yExtent == ((StateTracker) o).yExtent &&
+                currentWood == ((StateTracker) o).currentWood &&
+                currentGold == ((StateTracker) o).currentGold &&
+                requiredWood == ((StateTracker) o).requiredWood &&
+                requiredGold == ((StateTracker) o).requiredGold &&
+                buildPeasants == ((StateTracker) o).buildPeasants &&
+                peasants.equals(((StateTracker) o).peasants) &&
+                goldMines.equals(((StateTracker) o).goldMines) &&
+                forests.equals(((StateTracker) o).forests) &&
+                townhalls.equals(((StateTracker) o).townhalls);
+    }
+
+
 }

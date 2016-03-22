@@ -36,7 +36,11 @@ public class GameState implements Comparable<GameState> {
      * @param buildPeasants True if the BuildPeasant action should be considered
      */
     public GameState(State.StateView state, int playernum, int requiredGold, int requiredWood, boolean buildPeasants) {
-        stateTracker = new StateTracker(state, playernum, requiredGold, requiredWood, buildPeasants);
+        this.stateTracker = new StateTracker(state, playernum, requiredGold, requiredWood, buildPeasants);
+    }
+
+    public GameState(StateTracker stateTracker){
+        this.stateTracker = new StateTracker(stateTracker);
     }
 
     public StateTracker getStateTracker() {
@@ -111,8 +115,7 @@ public class GameState implements Comparable<GameState> {
      */
     @Override
     public boolean equals(Object o) {
-        // TODO: Implement me!
-        return false;
+        return o instanceof GameState && stateTracker.equals((((GameState) o).getStateTracker()));
     }
 
     /**
