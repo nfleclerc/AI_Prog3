@@ -40,4 +40,12 @@ public abstract class Resource {
     public int getAmountRemaining() {
         return amountRemaining;
     }
+
+    public ResourceType getType() {
+        return type;
+    }
+
+    public void harvestAmount(int harvestAmount) {
+        amountRemaining -= harvestAmount;
+    }
 }

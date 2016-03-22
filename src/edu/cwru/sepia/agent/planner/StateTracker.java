@@ -2,6 +2,7 @@ package edu.cwru.sepia.agent.planner;
 
 import edu.cwru.sepia.agent.planner.entities.*;
 import edu.cwru.sepia.environment.model.state.ResourceNode;
+import edu.cwru.sepia.environment.model.state.ResourceType;
 import edu.cwru.sepia.environment.model.state.State;
 
 import java.util.ArrayList;
@@ -100,5 +101,15 @@ public class StateTracker {
 
     public List<Townhall> getTownhalls() {
         return townhalls;
+    }
+
+    public void addResource(ResourceType cargoType, int cargoAmount) {
+        switch (cargoType){
+            case GOLD:
+                currentGold += cargoAmount;
+                break;
+            case WOOD:
+                currentWood += cargoAmount;
+        }
     }
 }

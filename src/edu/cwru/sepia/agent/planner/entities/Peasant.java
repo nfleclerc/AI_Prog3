@@ -14,7 +14,6 @@ public class Peasant {
     private Position position;
     private int cargoAmount;
     private ResourceType cargoType;
-    private boolean idle;
 
     public Peasant(Unit.UnitView unit){
         id = unit.getID();
@@ -39,11 +38,24 @@ public class Peasant {
         return cargoAmount;
     }
 
-    public boolean isIdle() {
-        return idle;
-    }
-
     public Position getPosition() {
         return position;
+    }
+
+    public ResourceType getCargoType() {
+        return cargoType;
+    }
+
+    public void setCargoAmount(int cargoAmount) {
+        this.cargoAmount = cargoAmount;
+    }
+
+    public void setCargoType(ResourceType cargoType) {
+        this.cargoType = cargoType;
+    }
+
+    public void carry(ResourceType type, int cargoAmount) {
+        setCargoType(type);
+        setCargoAmount(cargoAmount);
     }
 }

@@ -19,7 +19,7 @@ public class Deposit implements StripsAction {
     public boolean preconditionsMet(GameState state) {
         StateTracker stateTracker = state.getStateTracker();
         stateTracker.getPeasants().stream()
-                .filter(peasant -> peasant.isIdle() && peasant.getCargoAmount() > 0)
+                .filter(peasant -> peasant.getCargoAmount() > 0)
                 .forEach(peasant -> stateTracker.getTownhalls().stream()
                         .filter(townhall -> peasant.getPosition().isAdjacent(townhall.getPosition()))
                         .forEach(townhall -> peasantTownhallMap.put(peasant, townhall)));
@@ -29,9 +29,16 @@ public class Deposit implements StripsAction {
     @Override
     public GameState apply(GameState state) {
         GameState childState = new GameState(state, this);
-        //peasant is not idle
-        //peasant has no cargo anymore
-        //current amt of resource is increased
+        for (Peasant childPeasant : childState.getStateTracker().getPeasants()){
+            peasantTownhallMap.keySet().stream()
+                    .filter(childPeasant::equals)
+                    .forEach(peasant -> {
+                        childState.getStateTracker()
+                                .addResource(peasant.getCargoType(), peasant.getCargoAmount());
+                        childPeasant.setCargoAmount(0);
+                        childPeasant.setCargoType(null);
+            });
+        }
         return childState;
     }
 }

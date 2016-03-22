@@ -19,8 +19,8 @@ public class Harvest implements StripsAction {
     public boolean preconditionsMet(GameState state) {
         StateTracker stateTracker = state.getStateTracker();
         stateTracker.getPeasants().stream()
-                //peasant is idle and is not carrying anything
-                .filter(peasant -> peasant.getCargoAmount() == 0 && peasant.isIdle())
+                //peasant is not carrying anything
+                .filter(peasant -> peasant.getCargoAmount() == 0)
                 .forEach(peasant -> stateTracker.getAllResources().stream()
                         //resource has materials to harvest and is next to the peasant
                         .filter(resource -> resource.getAmountRemaining() > 0 &&
@@ -32,9 +32,14 @@ public class Harvest implements StripsAction {
     @Override
     public GameState apply(GameState state) {
         GameState childState = new GameState(state, this);
-        //peasant is not idle
-        //peasant is now carrying stuff
-        //mine/forest loses supplies
+        for (Peasant childPeasant : childState.getStateTracker().getPeasants()){
+            peasantResourceMap.keySet().stream()
+                    .filter(childPeasant::equals)
+                    .forEach(peasant -> {
+                        childPeasant.carry(peasantResourceMap.get(peasant).getType(), 100);
+                        peasantResourceMap.get(peasant).harvestAmount(100);
+            });
+        }
         return childState;
     }
 }
