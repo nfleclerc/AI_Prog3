@@ -13,32 +13,25 @@ import java.util.Map;
  */
 public class Deposit implements StripsAction {
 
-    private Map<Peasant, Townhall> peasantTownhallMap = new HashMap<>();
+
+    private final Peasant peasant;
+    private final Townhall townhall;
+
+
+    public Deposit(Peasant peasant, Townhall townhall){
+        this.peasant = peasant;
+        this.townhall = townhall;
+    }
 
     @Override
     public boolean preconditionsMet(GameState state) {
-        StateTracker stateTracker = state.getStateTracker();
-        stateTracker.getPeasants().stream()
-                .filter(peasant -> peasant.getCargoAmount() > 0)
-                .forEach(peasant -> stateTracker.getTownhalls().stream()
-                        .filter(townhall -> peasant.getPosition().isAdjacent(townhall.getPosition()))
-                        .forEach(townhall -> peasantTownhallMap.put(peasant, townhall)));
-        return !peasantTownhallMap.isEmpty();
+        return peasant.getCargoAmount() > 0 &&
+                peasant.getPosition().isAdjacent(townhall.getPosition());
     }
 
     @Override
     public GameState apply(GameState state) {
         GameState childState = new GameState(state, this);
-        for (Peasant childPeasant : childState.getStateTracker().getPeasants()){
-            peasantTownhallMap.keySet().stream()
-                    .filter(childPeasant::equals)
-                    .forEach(peasant -> {
-                        childState.getStateTracker()
-                                .addResource(peasant.getCargoType(), peasant.getCargoAmount());
-                        childPeasant.setCargoAmount(0);
-                        childPeasant.setCargoType(null);
-            });
-        }
         return childState;
     }
 }

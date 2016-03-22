@@ -71,6 +71,10 @@ public class GameState implements Comparable<GameState> {
      */
     public List<GameState> generateChildren() {
         // TODO: Implement me!
+        //for each peasant in this state
+            //add all possible states resulting from moves
+            //add all possible states resulting from deposits
+            //add all possible states resulting from harvests
         return null;
     }
 
