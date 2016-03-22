@@ -1,5 +1,6 @@
 package edu.cwru.sepia.agent.planner;
 
+import edu.cwru.sepia.agent.planner.actions.StripsAction;
 import edu.cwru.sepia.environment.model.state.State;
 
 import java.util.List;
@@ -24,6 +25,8 @@ import java.util.List;
 public class GameState implements Comparable<GameState> {
 
     private StateTracker stateTracker;
+    private GameState parent;
+    private StripsAction actionFromParentToThis;
 
     /**
      * Construct a GameState from a stateview object. This is used to construct the initial search node. All other
@@ -39,7 +42,9 @@ public class GameState implements Comparable<GameState> {
         this.stateTracker = new StateTracker(state, playernum, requiredGold, requiredWood, buildPeasants);
     }
 
-    public GameState(StateTracker stateTracker){
+    public GameState(StateTracker stateTracker, GameState parent, StripsAction actionFromParentToThis){
+        this.parent = parent;
+        this.actionFromParentToThis = actionFromParentToThis;
         this.stateTracker = new StateTracker(stateTracker);
     }
 
@@ -133,5 +138,13 @@ public class GameState implements Comparable<GameState> {
     public int hashCode() {
         // TODO: Implement me!
         return 0;
+    }
+
+    public GameState getParent() {
+        return parent;
+    }
+
+    public StripsAction getActionFromParentToThis() {
+        return actionFromParentToThis;
     }
 }

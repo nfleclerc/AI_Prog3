@@ -106,7 +106,7 @@ public class PlannerAgent extends Agent {
 
             //the plan has been found, if at the goal node
             if (currentState.isGoal()){
-                return null;
+                return makePlan(currentState);
             }
 
             //add node to the open list if not in the closed or open list.
@@ -120,6 +120,17 @@ public class PlannerAgent extends Agent {
         }
 
         return null;
+    }
+
+    private Stack<StripsAction> makePlan(GameState currentState) {
+        Stack<StripsAction> plan = new Stack<>();
+        GameState parentState = currentState.getParent();
+        //go to each node's parent and add it to the stack of moves
+        while(parentState.getParent() != null){
+            plan.push(parentState.getActionFromParentToThis());
+            parentState = parentState.getParent();
+        }
+        return plan;
     }
 
     /**
