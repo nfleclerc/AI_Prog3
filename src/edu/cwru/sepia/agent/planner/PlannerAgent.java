@@ -91,7 +91,34 @@ public class PlannerAgent extends Agent {
      * @return The plan or null if no plan is found.
      */
     private Stack<StripsAction> AstarSearch(GameState startState) {
-        // TODO: Implement me!
+
+        PriorityQueue<GameState> open = new PriorityQueue<>();
+        List<GameState> closed = new ArrayList<>();
+
+        GameState currentState;
+        open.add(startState);
+
+        //add nodes to the open list until the goal has been found
+        while (!open.isEmpty()){
+
+            //heuristically determine which node to expand next
+            currentState = open.poll();
+
+            //the plan has been found, if at the goal node
+            if (currentState.isGoal()){
+                return null;
+            }
+
+            //add node to the open list if not in the closed or open list.
+            currentState.generateChildren().stream()
+                    .filter(child -> !closed.contains(child))
+                    .filter(child -> !open.contains(child))
+                    .forEach(open::add);
+
+            closed.add(currentState);
+
+        }
+
         return null;
     }
 

@@ -23,8 +23,7 @@ public class StateTracker {
     private double yExtent;
     private int currentWood;
     private int currentGold;
-    private int
-            requiredWood;
+    private int requiredWood;
     private int requiredGold;
     private boolean buildPeasants;
     private List<Peasant> peasants = new ArrayList<>();
@@ -81,14 +80,8 @@ public class StateTracker {
     public boolean equals(Object o) {
         return o instanceof StateTracker &&
                 playerNum == ((StateTracker) o).playerNum &&
-                turnNumber == ((StateTracker) o).turnNumber &&
-                xExtent == ((StateTracker) o).xExtent &&
-                yExtent == ((StateTracker) o).yExtent &&
                 currentWood == ((StateTracker) o).currentWood &&
                 currentGold == ((StateTracker) o).currentGold &&
-                requiredWood == ((StateTracker) o).requiredWood &&
-                requiredGold == ((StateTracker) o).requiredGold &&
-                buildPeasants == ((StateTracker) o).buildPeasants &&
                 peasants.equals(((StateTracker) o).peasants) &&
                 goldMines.equals(((StateTracker) o).goldMines) &&
                 forests.equals(((StateTracker) o).forests) &&
