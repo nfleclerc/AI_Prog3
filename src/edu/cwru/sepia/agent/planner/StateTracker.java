@@ -78,13 +78,22 @@ public class StateTracker {
     @Override
     public boolean equals(Object o) {
         return o instanceof StateTracker &&
-                playerNum == ((StateTracker) o).playerNum &&
                 currentWood == ((StateTracker) o).currentWood &&
                 currentGold == ((StateTracker) o).currentGold &&
                 peasants.equals(((StateTracker) o).peasants) &&
                 goldMines.equals(((StateTracker) o).goldMines) &&
                 forests.equals(((StateTracker) o).forests) &&
                 townhalls.equals(((StateTracker) o).townhalls);
+    }
+
+    @Override
+    public int hashCode(){
+        return currentWood +
+                currentGold +
+                peasants.hashCode() +
+                goldMines.hashCode() +
+                forests.hashCode() +
+                townhalls.hashCode();
     }
 
 
@@ -119,5 +128,14 @@ public class StateTracker {
 
     public double getYExtent() {
         return yExtent;
+    }
+
+    public Peasant getPeasantById(int id){
+        for (Peasant peasant : peasants){
+            if (peasant.getID() == id){
+                return peasant;
+            }
+        }
+        return null;
     }
 }

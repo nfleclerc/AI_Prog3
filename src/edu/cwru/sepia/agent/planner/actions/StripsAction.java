@@ -58,4 +58,5 @@ public abstract class StripsAction {
     }
 
     public abstract Position targetPosition();
+
 }

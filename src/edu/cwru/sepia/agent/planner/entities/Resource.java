@@ -30,7 +30,9 @@ public abstract class Resource {
     public boolean equals(Object o) {
         return o instanceof Resource &&
                 id == ((Resource) o).id &&
-                position.equals(((Resource) o).position);
+                position.equals(((Resource) o).position) &&
+                type.equals(((Resource)o).getType()) &&
+                amountRemaining == ((Resource)o).amountRemaining;
     }
 
     public Position getPosition() {
@@ -47,5 +49,9 @@ public abstract class Resource {
 
     public void harvestAmount(int harvestAmount) {
         amountRemaining -= harvestAmount;
+    }
+
+    public int getID() {
+        return id;
     }
 }

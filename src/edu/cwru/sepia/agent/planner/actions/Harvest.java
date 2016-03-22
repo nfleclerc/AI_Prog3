@@ -28,17 +28,19 @@ public class Harvest extends StripsAction {
     @Override
     public GameState apply(GameState state) {
         GameState childState = new GameState(state, this);
-        childState.getStateTracker().getPeasants().stream()
-                .filter(this.peasant::equals)
-                .forEach(peasant -> {
-                    peasant.carry(resource.getType(), 100);
-                    resource.harvestAmount(100);
-                });
+        Peasant childPeasant = childState.getStateTracker().getPeasantById(peasant.getID());
+        childPeasant.carry(resource.getType(), 100);
+        resource.harvestAmount(100);
         return childState;
     }
 
     @Override
     public Position targetPosition() {
         return resource.getPosition();
+    }
+
+    @Override
+    public String toString(){
+        return getClass().getName() + "(" + peasant.getID() + ", " + resource.getID() + ")";
     }
 }

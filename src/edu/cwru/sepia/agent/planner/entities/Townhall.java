@@ -25,4 +25,8 @@ public class Townhall {
     public Position getPosition() {
         return position;
     }
+
+    public int getID() {
+        return id;
+    }
 }

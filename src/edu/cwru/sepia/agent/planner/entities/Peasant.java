@@ -26,12 +26,16 @@ public class Peasant {
         id = peasant.id;
         position = new Position(peasant.position);
         cargoAmount = peasant.cargoAmount;
+        cargoType = peasant.cargoType;
     }
 
     @Override
     public boolean equals(Object o) {
         return o instanceof Peasant &&
-                id == ((Peasant) o).id;
+                id == ((Peasant) o).id &&
+                position.equals(((Peasant) o).getPosition()) &&
+                cargoAmount == ((Peasant) o).getCargoAmount() &&
+                cargoType == ((Peasant) o).getCargoType();
     }
 
     public int getCargoAmount() {

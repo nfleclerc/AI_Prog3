@@ -29,14 +29,18 @@ public class Move extends StripsAction {
     @Override
     public GameState apply(GameState state) {
         GameState childState = new GameState(state, this);
-        childState.getStateTracker().getPeasants().stream()
-                .filter(peasant -> peasant.equals(this.peasant))
-                .forEach(peasant -> peasant.setPosition(position));
+        Peasant childPeasant = childState.getStateTracker().getPeasantById(peasant.getID());
+        childPeasant.setPosition(position);
         return null;
     }
 
     @Override
     public Position targetPosition() {
         return position;
+    }
+
+    @Override
+    public String toString(){
+        return getClass().getName() + "(" + peasant.getID() + ", " + position.toString() + ")";
     }
 }

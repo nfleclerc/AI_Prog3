@@ -32,14 +32,20 @@ public class Deposit extends StripsAction {
     @Override
     public GameState apply(GameState state) {
         GameState childState = new GameState(state, this);
-        childState.getStateTracker().getPeasants().stream()
-                .filter(this.peasant::equals)
-                .forEach(peasant -> peasant.carry(null, 0));
+        Peasant childPeasant = childState.getStateTracker().getPeasantById(peasant.getID());
+        childState.getStateTracker()
+                .addResource(childPeasant.getCargoType(), childPeasant.getCargoAmount());
+        childPeasant.carry(null, 0);
         return childState;
     }
 
     @Override
     public Position targetPosition() {
         return townhall.getPosition();
+    }
+
+    @Override
+    public String toString(){
+        return getClass().getName() + "(" + peasant.getID() + ", " + townhall.getID() + ")";
     }
 }
