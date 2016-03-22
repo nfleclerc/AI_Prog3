@@ -102,7 +102,28 @@ public class PEAgent extends Agent {
      * @return SEPIA representation of same action
      */
     private Action createSepiaAction(StripsAction action) {
-        return null;
+        switch (action.getType()){
+            case MOVE:
+                return Action.createCompoundMove(
+                        action.getPeasant().getID(),
+                        action.getPeasant().getPosition().x,
+                        action.getPeasant().getPosition().y
+                );
+            case HARVEST:
+                return Action.createPrimitiveGather(
+                        action.getPeasant().getID(),
+                        action.getPeasant().getPosition().getDirection(
+                                action.targetPosition())
+                );
+            case DEPOSIT:
+                return Action.createPrimitiveDeposit(
+                        action.getPeasant().getID(),
+                        action.getPeasant().getPosition().getDirection(
+                                action.targetPosition())
+                );
+            default:
+                return null;
+        }
     }
 
     @Override

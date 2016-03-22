@@ -58,4 +58,12 @@ public class Peasant {
         setCargoType(type);
         setCargoAmount(cargoAmount);
     }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
+
+    public int getID() {
+        return id;
+    }
 }

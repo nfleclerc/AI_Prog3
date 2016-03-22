@@ -1,8 +1,14 @@
 package edu.cwru.sepia.agent.planner;
 
+import edu.cwru.sepia.agent.planner.actions.Deposit;
+import edu.cwru.sepia.agent.planner.actions.Harvest;
 import edu.cwru.sepia.agent.planner.actions.StripsAction;
+import edu.cwru.sepia.agent.planner.entities.Peasant;
+import edu.cwru.sepia.agent.planner.entities.Resource;
+import edu.cwru.sepia.agent.planner.entities.Townhall;
 import edu.cwru.sepia.environment.model.state.State;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -70,12 +76,26 @@ public class GameState implements Comparable<GameState> {
      * @return A list of the possible successor states and their associated actions
      */
     public List<GameState> generateChildren() {
-        // TODO: Implement me!
+        List<GameState> children = new ArrayList<>();
         //for each peasant in this state
+        for (Peasant peasant : stateTracker.getPeasants()) {
             //add all possible states resulting from moves
             //add all possible states resulting from deposits
+            for (Townhall townhall : stateTracker.getTownhalls()){
+                Deposit deposit = new Deposit(peasant, townhall);
+                if (deposit.preconditionsMet(this)){
+                    children.add(deposit.apply(this));
+                }
+            }
             //add all possible states resulting from harvests
-        return null;
+            for (Resource resource : stateTracker.getAllResources()){
+                Harvest harvest = new Harvest(peasant, resource);
+                if (harvest.preconditionsMet(this)){
+                    children.add(harvest.apply(this));
+                }
+            }
+        }
+        return children;
     }
 
     /**

@@ -112,4 +112,12 @@ public class StateTracker {
                 currentWood += cargoAmount;
         }
     }
+
+    public double getXExtent() {
+        return xExtent;
+    }
+
+    public double getYExtent() {
+        return yExtent;
+    }
 }

@@ -12,6 +12,8 @@ import java.util.List;
  * a location. If you need modify the methods and add new ones. If you make changes add a note here about what was
  * changed and why.
  *
+ * Position takes doubles instead if ints, so I don't have to worry about casting
+ *
  * This class is immutable, meaning any changes creates an entirely separate copy.
  */
 public class Position {
@@ -68,7 +70,7 @@ public class Position {
      * @param yExtent Y dimension size of the map (get this from the StateView object)
      * @return True if in bounds, false otherwise.
      */
-    public boolean inBounds(int xExtent, int yExtent) {
+    public boolean inBounds(double xExtent, double yExtent) {
         return (x >= 0 && y >= 0 && x < xExtent && y < yExtent);
     }
 

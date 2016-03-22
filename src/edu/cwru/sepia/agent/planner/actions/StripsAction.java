@@ -1,13 +1,24 @@
 package edu.cwru.sepia.agent.planner.actions;
 
 import edu.cwru.sepia.agent.planner.GameState;
+import edu.cwru.sepia.agent.planner.Position;
+import edu.cwru.sepia.agent.planner.entities.Peasant;
 
 /**
  * A useful start of an interface representing strips actions. You may add new methods to this interface if needed, but
  * you should implement the ones provided. You may also find it useful to specify a method that returns the effects
  * of a StripsAction.
  */
-public interface StripsAction {
+public abstract class StripsAction {
+
+    protected SepiaActionType type;
+    protected final Peasant peasant;
+
+
+    public StripsAction(Peasant peasant){
+        this.peasant = peasant;
+    }
+
 
     /**
      * Returns true if the provided GameState meets all of the necessary conditions for this action to successfully
@@ -22,7 +33,7 @@ public interface StripsAction {
      * @param state GameState to check if action is applicable
      * @return true if apply can be called, false otherwise
      */
-    public boolean preconditionsMet(GameState state);
+    public abstract boolean preconditionsMet(GameState state);
 
     /**
      * Applies the action instance to the given GameState producing a new GameState in the process.
@@ -36,5 +47,15 @@ public interface StripsAction {
      * @param state State to apply action to
      * @return State resulting from successful action application.
      */
-    public GameState apply(GameState state);
+    public abstract GameState apply(GameState state);
+
+    public SepiaActionType getType() {
+        return type;
+    }
+
+    public Peasant getPeasant() {
+        return peasant;
+    }
+
+    public abstract Position targetPosition();
 }

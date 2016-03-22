@@ -1,24 +1,21 @@
 package edu.cwru.sepia.agent.planner.actions;
 
 import edu.cwru.sepia.agent.planner.GameState;
-import edu.cwru.sepia.agent.planner.StateTracker;
+import edu.cwru.sepia.agent.planner.Position;
 import edu.cwru.sepia.agent.planner.entities.Peasant;
 import edu.cwru.sepia.agent.planner.entities.Resource;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by nathaniel on 3/20/16.
  */
-public class Harvest implements StripsAction {
+public class Harvest extends StripsAction {
 
     private final Resource resource;
-    private final Peasant peasant;
 
     public Harvest(Peasant peasant, Resource resource){
-        this.peasant = peasant;
+        super(peasant);
         this.resource = resource;
+        this.type = SepiaActionType.HARVEST;
     }
 
     @Override
@@ -31,6 +28,17 @@ public class Harvest implements StripsAction {
     @Override
     public GameState apply(GameState state) {
         GameState childState = new GameState(state, this);
+        childState.getStateTracker().getPeasants().stream()
+                .filter(this.peasant::equals)
+                .forEach(peasant -> {
+                    peasant.carry(resource.getType(), 100);
+                    resource.harvestAmount(100);
+                });
         return childState;
+    }
+
+    @Override
+    public Position targetPosition() {
+        return resource.getPosition();
     }
 }
