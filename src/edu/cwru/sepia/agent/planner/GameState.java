@@ -118,6 +118,8 @@ public class GameState implements Comparable<GameState> {
      *
      * @return The current cost to reach this goal
      */
+
+    //todo: make sure to update when generating new states in stripsaction
     public double getCost() {
         // TODO: Implement me!
         return 0.0;
