@@ -35,6 +35,14 @@ public abstract class Resource {
                 amountRemaining == ((Resource)o).amountRemaining;
     }
 
+    @Override
+    public int hashCode(){
+        return id +
+                position.hashCode() +
+                type.hashCode() +
+                amountRemaining;
+    }
+
     public Position getPosition() {
         return position;
     }
@@ -55,5 +63,5 @@ public abstract class Resource {
         return id;
     }
 
-    //todo: hashcode
+
 }

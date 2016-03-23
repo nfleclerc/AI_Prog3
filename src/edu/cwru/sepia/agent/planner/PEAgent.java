@@ -92,8 +92,14 @@ public class PEAgent extends Agent {
      */
     @Override
     public Map<Integer, Action> middleStep(State.StateView stateView, History.HistoryView historyView) {
-        // TODO: Implement me!
-        return null;
+        /* todo: check for an action's progress before assigning a new one
+        also action map should probably be saved elsewhere and not created here,
+        otherwise it doesnt seem possible to parallelize
+         */
+        Map<Integer, Action> actionMap = new HashMap<>();
+        StripsAction nextAction = plan.pop();
+        actionMap.put(nextAction.getPeasant().getID(), createSepiaAction(nextAction));
+        return actionMap;
     }
 
     /**

@@ -31,7 +31,7 @@ public class Move extends StripsAction {
         GameState childState = new GameState(state, this);
         Peasant childPeasant = childState.getStateTracker().getPeasantById(peasant.getID());
         childPeasant.setPosition(position);
-        return null;
+        return childState;
     }
 
     @Override

@@ -4,6 +4,7 @@ import edu.cwru.sepia.agent.planner.entities.*;
 import edu.cwru.sepia.environment.model.state.ResourceNode;
 import edu.cwru.sepia.environment.model.state.ResourceType;
 import edu.cwru.sepia.environment.model.state.State;
+import edu.cwru.sepia.environment.model.state.Unit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +61,6 @@ public class StateTracker {
         this.buildPeasants = buildPeasants;
         currentGold = 0;
         currentWood = 0;
-        peasants.addAll(state.getAllUnits().stream().map(Peasant::new).collect(Collectors.toList()));
         for (ResourceNode.ResourceView resource : state.getAllResourceNodes()) {
             if (resource.getType() == ResourceNode.Type.GOLD_MINE) {
                 goldMines.add(new GoldMine(resource));
@@ -68,7 +68,13 @@ public class StateTracker {
                 forests.add(new Forest(resource));
             }
         }
-        //todo: initialize townhalls from state
+        for (Unit.UnitView unit : state.getAllUnits()){
+            if (unit.getTemplateView().getName().equals("peasant")){
+                peasants.add(new Peasant(unit));
+            } else {
+                townhalls.add(new Townhall(unit));
+            }
+        }
     }
 
     public boolean isGoal() {

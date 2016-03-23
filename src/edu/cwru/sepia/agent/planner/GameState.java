@@ -2,6 +2,7 @@ package edu.cwru.sepia.agent.planner;
 
 import edu.cwru.sepia.agent.planner.actions.Deposit;
 import edu.cwru.sepia.agent.planner.actions.Harvest;
+import edu.cwru.sepia.agent.planner.actions.Move;
 import edu.cwru.sepia.agent.planner.actions.StripsAction;
 import edu.cwru.sepia.agent.planner.entities.Peasant;
 import edu.cwru.sepia.agent.planner.entities.Resource;
@@ -79,7 +80,14 @@ public class GameState implements Comparable<GameState> {
         List<GameState> children = new ArrayList<>();
         //for each peasant in this state
         for (Peasant peasant : stateTracker.getPeasants()) {
-            //todo: add all possible states resulting from moves
+            //generate List of positions that are hunkey-dorey
+            List<Position> viablePositions = generateViablePositions();
+            for (Position position : viablePositions){
+                Move move = new Move(peasant, position);
+                if (move.preconditionsMet(this)){
+                    children.add(move.apply(this));
+                }
+            }
             //add all possible states resulting from deposits
             for (Townhall townhall : stateTracker.getTownhalls()){
                 Deposit deposit = new Deposit(peasant, townhall);
@@ -96,6 +104,21 @@ public class GameState implements Comparable<GameState> {
             }
         }
         return children;
+    }
+
+    private List<Position> generateViablePositions() {
+        List<Position> viablePositions = new ArrayList<>();
+        for (Townhall townhall : stateTracker.getTownhalls()){
+            viablePositions.addAll(townhall.getPosition().getAdjacentPositions());
+        }
+        for (Resource resource : stateTracker.getAllResources()){
+            viablePositions.addAll(resource.getPosition().getAdjacentPositions());
+        }
+        viablePositions.stream()
+                .filter(position -> !position.inBounds(stateTracker.getXExtent(), stateTracker.getYExtent()))
+                .forEach(viablePositions::remove);
+        return viablePositions;
+
     }
 
     /**

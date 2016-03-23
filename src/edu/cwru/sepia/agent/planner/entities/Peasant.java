@@ -15,7 +15,7 @@ public class Peasant {
     private int cargoAmount;
     private ResourceType cargoType;
 
-    //todo: some way of keeping track of business and knowing the current action
+    //todo: some way of keeping track of busyness and knowing the current action
 
     public Peasant(Unit.UnitView unit){
         id = unit.getID();
@@ -38,6 +38,14 @@ public class Peasant {
                 position.equals(((Peasant) o).getPosition()) &&
                 cargoAmount == ((Peasant) o).getCargoAmount() &&
                 cargoType == ((Peasant) o).getCargoType();
+    }
+
+    @Override
+    public int hashCode(){
+        return id +
+                position.hashCode() +
+                cargoType.hashCode() +
+                cargoAmount;
     }
 
     public int getCargoAmount() {
@@ -73,5 +81,4 @@ public class Peasant {
         return id;
     }
 
-    //todo: hashcode
 }
