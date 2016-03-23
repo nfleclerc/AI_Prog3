@@ -44,7 +44,6 @@ public class Peasant {
     public int hashCode(){
         return id +
                 position.hashCode() +
-                cargoType.hashCode() +
                 cargoAmount;
     }
 

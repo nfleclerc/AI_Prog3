@@ -131,7 +131,7 @@ public class GameState implements Comparable<GameState> {
      */
     public double heuristic() {
         // TODO: Implement me!
-        return 0.0;
+        return 1;
     }
 
     /**
@@ -145,7 +145,7 @@ public class GameState implements Comparable<GameState> {
     //todo: make sure to update when generating new states in stripsaction
     public double getCost() {
         // TODO: Implement me!
-        return 0.0;
+        return 1;
     }
 
     /**

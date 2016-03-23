@@ -114,7 +114,6 @@ public class PlannerAgent extends Agent {
                     .filter(child -> !closed.contains(child))
                     .forEach(open::add);
 
-            System.out.println(open);
 
             closed.add(currentState);
 

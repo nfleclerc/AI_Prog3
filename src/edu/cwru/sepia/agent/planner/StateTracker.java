@@ -69,7 +69,7 @@ public class StateTracker {
             }
         }
         for (Unit.UnitView unit : state.getAllUnits()){
-            if (unit.getTemplateView().getName().equals("peasant")){
+            if (unit.getTemplateView().getName().equals("Peasant")){
                 peasants.add(new Peasant(unit));
             } else {
                 townhalls.add(new Townhall(unit));
