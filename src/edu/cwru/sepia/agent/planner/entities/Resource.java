@@ -54,4 +54,6 @@ public abstract class Resource {
     public int getID() {
         return id;
     }
+
+    //todo: hashcode
 }

@@ -15,6 +15,8 @@ public class Peasant {
     private int cargoAmount;
     private ResourceType cargoType;
 
+    //todo: some way of keeping track of business and knowing the current action
+
     public Peasant(Unit.UnitView unit){
         id = unit.getID();
         position = new Position(unit.getXPosition(), unit.getYPosition());
@@ -70,4 +72,6 @@ public class Peasant {
     public int getID() {
         return id;
     }
+
+    //todo: hashcode
 }

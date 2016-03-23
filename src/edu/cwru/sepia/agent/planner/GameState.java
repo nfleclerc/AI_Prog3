@@ -79,7 +79,7 @@ public class GameState implements Comparable<GameState> {
         List<GameState> children = new ArrayList<>();
         //for each peasant in this state
         for (Peasant peasant : stateTracker.getPeasants()) {
-            //add all possible states resulting from moves
+            //todo: add all possible states resulting from moves
             //add all possible states resulting from deposits
             for (Townhall townhall : stateTracker.getTownhalls()){
                 Deposit deposit = new Deposit(peasant, townhall);

@@ -29,4 +29,6 @@ public class Townhall {
     public int getID() {
         return id;
     }
+
+    //todo: hashcode
 }

@@ -6,7 +6,6 @@ import edu.cwru.sepia.environment.model.state.ResourceType;
 import edu.cwru.sepia.environment.model.state.State;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,6 +68,7 @@ public class StateTracker {
                 forests.add(new Forest(resource));
             }
         }
+        //todo: initialize townhalls from state
     }
 
     public boolean isGoal() {
