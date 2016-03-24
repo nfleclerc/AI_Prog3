@@ -81,7 +81,7 @@ public class GameState implements Comparable<GameState> {
         //for each peasant in this state
         for (Peasant peasant : stateTracker.getPeasants()) {
             //generate List of positions that are hunkey-dorey
-            List<Position> viablePositions = generateViablePositions();
+            List<Position> viablePositions = generateViablePositions(peasant);
             for (Position position : viablePositions){
                 Move move = new Move(peasant, position);
                 if (move.preconditionsMet(this)){
@@ -106,19 +106,28 @@ public class GameState implements Comparable<GameState> {
         return children;
     }
 
-    private List<Position> generateViablePositions() {
+    private List<Position> generateViablePositions(Peasant peasant) {
         List<Position> viablePositions = new ArrayList<>();
-        for (Townhall townhall : stateTracker.getTownhalls()){
-            viablePositions.addAll(townhall.getPosition().getAdjacentPositions());
-        }
+        Position currentPosition = peasant.getPosition();
         for (Resource resource : stateTracker.getAllResources()){
-            viablePositions.addAll(resource.getPosition().getAdjacentPositions());
+            List<Position> adjacentPositions = new ArrayList<>(resource.getPosition().getAdjacentPositions());
+            Position bestPosition = adjacentPositions.get(0);
+            for (Position position : adjacentPositions){
+                bestPosition = position.chebyshevDistance(currentPosition) <
+                        bestPosition.chebyshevDistance(currentPosition) ? position : bestPosition;
+            }
+            viablePositions.add(bestPosition);
         }
-        viablePositions.stream()
-                .filter(position -> !position.inBounds(stateTracker.getXExtent(), stateTracker.getYExtent()))
-                .forEach(viablePositions::remove);
+        for (Townhall townhall : stateTracker.getTownhalls()){
+            List<Position> adjacentPositions = new ArrayList<>(townhall.getPosition().getAdjacentPositions());
+            Position bestPosition = adjacentPositions.get(0);
+            for (Position position : adjacentPositions){
+                bestPosition = position.chebyshevDistance(currentPosition) <
+                        bestPosition.chebyshevDistance(currentPosition) ? position : bestPosition;
+            }
+            viablePositions.add(bestPosition);
+        }
         return viablePositions;
-
     }
 
     /**
