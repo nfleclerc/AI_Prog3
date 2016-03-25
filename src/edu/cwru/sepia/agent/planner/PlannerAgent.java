@@ -112,6 +112,7 @@ public class PlannerAgent extends Agent {
             //add node to the open list if not in the closed or open list.
             currentState.generateChildren().stream()
                     .filter(child -> !closed.contains(child))
+                    .filter(child -> !open.contains(child))
                     .forEach(open::add);
 
 

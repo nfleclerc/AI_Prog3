@@ -35,6 +35,11 @@ public class Move extends StripsAction {
     }
 
     @Override
+    public double getCost(){
+        return position.chebyshevDistance(position);
+    }
+
+    @Override
     public Position targetPosition() {
         return position;
     }

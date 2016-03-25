@@ -127,6 +127,10 @@ public class GameState implements Comparable<GameState> {
             }
             viablePositions.add(bestPosition);
         }
+        for (Position position : viablePositions){
+            System.out.println(position.toString());
+        }
+        System.out.print("all pos printed");
         return viablePositions;
     }
 
@@ -151,10 +155,10 @@ public class GameState implements Comparable<GameState> {
      * @return The current cost to reach this goal
      */
 
-    //todo: make sure to update when generating new states in stripsaction
     public double getCost() {
-        // TODO: Implement me!
-        return 1;
+        return actionFromParentToThis == null && parent == null ?
+                0.0 :
+                parent.getCost() + actionFromParentToThis.getCost();
     }
 
     /**

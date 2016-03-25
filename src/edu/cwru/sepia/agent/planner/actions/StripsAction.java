@@ -59,4 +59,8 @@ public abstract class StripsAction {
 
     public abstract Position targetPosition();
 
+    public double getCost(){
+        return 1;
+    }
+
 }
