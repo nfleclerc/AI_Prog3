@@ -211,4 +211,8 @@ public class GameState implements Comparable<GameState> {
     public StripsAction getActionFromParentToThis() {
         return actionFromParentToThis;
     }
+
+    public void removeResource(Resource resource) {
+        stateTracker.removeResource(resource);
+    }
 }

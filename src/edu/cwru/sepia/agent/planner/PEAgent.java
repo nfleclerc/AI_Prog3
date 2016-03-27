@@ -95,22 +95,15 @@ public class PEAgent extends Agent {
      */
     @Override
     public Map<Integer, Action> middleStep(State.StateView stateView, History.HistoryView historyView) {
-        /* todo: check for an action's progress before assigning a new one
-        also action map should probably be saved elsewhere and not created here,
-        otherwise it doesnt seem possible to parallelize
-         */
-
         Map<Integer, Action> actionMap = new HashMap<>();
-        StripsAction nextAction = plan.pop();
-        Action action = createSepiaAction(nextAction);
-        Unit.UnitView unit = stateView.getUnit(nextAction.getPeasant().getID());
+        Unit.UnitView unit = stateView.getUnit(1);
         if (waitForPreviousAction(unit)){
             actionMap.put(unit.getID(), createSepiaAction(previousStripsActions.peek()));
         } else {
-            actionMap.put(unit.getID(), action);
+            StripsAction nextAction = plan.pop();
+            actionMap.put(unit.getID(), createSepiaAction(nextAction));
+            previousStripsActions.push(nextAction);
         }
-        previousStripsActions.push(nextAction);
-        System.out.println(action);
         return actionMap;
     }
 

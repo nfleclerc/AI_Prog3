@@ -219,4 +219,23 @@ public class StateTracker {
         return closestGoldMine;
     }
 
+    public void removeResource(Resource resource) {
+        switch (resource.getType()){
+            case WOOD:
+                forests.remove(resource);
+                break;
+            case GOLD:
+                goldMines.remove(resource);
+                break;
+        }
+    }
+
+    public Resource getResourceById(int id) {
+        for (Resource resource : getAllResources()){
+            if (resource.getID() == id){
+                return resource;
+            }
+        }
+        return null;
+    }
 }
