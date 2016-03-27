@@ -8,27 +8,21 @@ import edu.cwru.sepia.environment.model.state.Unit;
  * Created by nathaniel on 3/21/16.
  *
  */
-public class Peasant {
+public class Peasant extends StripsUnit{
 
-    private int id;
-    private Position position;
     private int cargoAmount;
     private ResourceType cargoType;
 
-    //todo: some way of keeping track of busyness and knowing the current action
-
-    public Peasant(Unit.UnitView unit){
-        id = unit.getID();
-        position = new Position(unit.getXPosition(), unit.getYPosition());
-        cargoAmount = unit.getCargoAmount();
-        cargoType = unit.getCargoType();
-    }
-
-    public Peasant(Peasant peasant){
-        id = peasant.id;
-        position = new Position(peasant.position);
+    public Peasant(Peasant peasant) {
+        super(peasant);
         cargoAmount = peasant.cargoAmount;
         cargoType = peasant.cargoType;
+    }
+
+    public Peasant(Unit.UnitView unitView) {
+        super(unitView);
+        cargoAmount = unitView.getCargoAmount();
+        cargoType = unitView.getCargoType();
     }
 
     @Override
@@ -51,10 +45,6 @@ public class Peasant {
         return cargoAmount;
     }
 
-    public Position getPosition() {
-        return position;
-    }
-
     public ResourceType getCargoType() {
         return cargoType;
     }
@@ -74,10 +64,6 @@ public class Peasant {
 
     public void setPosition(Position position) {
         this.position = position;
-    }
-
-    public int getID() {
-        return id;
     }
 
 }

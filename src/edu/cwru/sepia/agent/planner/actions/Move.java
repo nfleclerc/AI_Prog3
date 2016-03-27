@@ -12,9 +12,11 @@ import edu.cwru.sepia.agent.planner.entities.Resource;
 public class Move extends StripsAction {
 
     private final Position position;
+    private final Peasant peasant;
 
     public Move(Peasant peasant, Position position){
         super(peasant);
+        this.peasant = peasant;
         this.position = position;
         this.type = SepiaActionType.MOVE;
     }

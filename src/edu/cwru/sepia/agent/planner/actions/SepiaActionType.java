@@ -6,5 +6,6 @@ package edu.cwru.sepia.agent.planner.actions;
 public enum SepiaActionType {
     MOVE,
     HARVEST,
-    DEPOSIT
+    DEPOSIT,
+    BUILD
 }

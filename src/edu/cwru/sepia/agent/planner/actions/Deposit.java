@@ -16,9 +16,11 @@ public class Deposit extends StripsAction {
 
 
     private final Townhall townhall;
+    private final Peasant peasant;
 
     public Deposit(Peasant peasant, Townhall townhall){
         super(peasant);
+        this.peasant = peasant;
         this.townhall = townhall;
         this.type = SepiaActionType.DEPOSIT;
     }

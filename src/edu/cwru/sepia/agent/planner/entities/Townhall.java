@@ -6,19 +6,15 @@ import edu.cwru.sepia.environment.model.state.Unit;
 /**
  * Created by nathaniel on 3/21/16.
  */
-public class Townhall {
+public class Townhall extends StripsUnit{
 
-    private int id;
-    private Position position;
 
-    public Townhall(Townhall townhall){
-        id = townhall.id;
-        position = new Position(townhall.position);
+    public Townhall(Townhall townhall) {
+        super(townhall);
     }
 
-    public Townhall(Unit.UnitView unitView){
-        id = unitView.getID();
-        position = new Position(unitView.getXPosition(), unitView.getYPosition());
+    public Townhall(Unit.UnitView unitView) {
+        super(unitView);
     }
 
     @Override
@@ -26,14 +22,6 @@ public class Townhall {
         return o instanceof Townhall &&
                 id == ((Townhall) o).id &&
                 position.equals(((Townhall) o).position);
-    }
-
-    public Position getPosition() {
-        return position;
-    }
-
-    public int getID() {
-        return id;
     }
 
     @Override

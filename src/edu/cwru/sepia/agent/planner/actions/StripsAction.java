@@ -3,6 +3,7 @@ package edu.cwru.sepia.agent.planner.actions;
 import edu.cwru.sepia.agent.planner.GameState;
 import edu.cwru.sepia.agent.planner.Position;
 import edu.cwru.sepia.agent.planner.entities.Peasant;
+import edu.cwru.sepia.agent.planner.entities.StripsUnit;
 
 /**
  * A useful start of an interface representing strips actions. You may add new methods to this interface if needed, but
@@ -12,11 +13,11 @@ import edu.cwru.sepia.agent.planner.entities.Peasant;
 public abstract class StripsAction {
 
     protected SepiaActionType type;
-    protected final Peasant peasant;
+    protected final StripsUnit unit;
 
 
-    public StripsAction(Peasant peasant){
-        this.peasant = peasant;
+    public StripsAction(StripsUnit unit){
+        this.unit = unit;
     }
 
 
@@ -53,8 +54,8 @@ public abstract class StripsAction {
         return type;
     }
 
-    public Peasant getPeasant() {
-        return peasant;
+    public StripsUnit getUnit() {
+        return unit;
     }
 
     public abstract Position targetPosition();

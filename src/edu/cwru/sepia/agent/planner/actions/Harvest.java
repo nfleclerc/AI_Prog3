@@ -11,9 +11,12 @@ import edu.cwru.sepia.agent.planner.entities.Resource;
 public class Harvest extends StripsAction {
 
     private final Resource resource;
+    private final Peasant peasant;
+
 
     public Harvest(Peasant peasant, Resource resource){
         super(peasant);
+        this.peasant = peasant;
         this.resource = resource;
         this.type = SepiaActionType.HARVEST;
     }

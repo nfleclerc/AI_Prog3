@@ -129,20 +129,20 @@ public class PEAgent extends Agent {
         switch (action.getType()){
             case MOVE:
                 return Action.createCompoundMove(
-                        action.getPeasant().getID(),
+                        action.getUnit().getID(),
                         action.targetPosition().x,
                         action.targetPosition().y
                 );
             case HARVEST:
                 return Action.createPrimitiveGather(
-                        action.getPeasant().getID(),
-                        action.getPeasant().getPosition().getDirection(
+                        action.getUnit().getID(),
+                        action.getUnit().getPosition().getDirection(
                                 action.targetPosition())
                 );
             case DEPOSIT:
                 return Action.createPrimitiveDeposit(
-                        action.getPeasant().getID(),
-                        action.getPeasant().getPosition().getDirection(
+                        action.getUnit().getID(),
+                        action.getUnit().getPosition().getDirection(
                                 action.targetPosition())
                 );
             default:
