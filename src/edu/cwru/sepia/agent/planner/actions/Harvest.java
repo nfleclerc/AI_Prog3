@@ -41,6 +41,6 @@ public class Harvest extends StripsAction {
 
     @Override
     public String toString(){
-        return getClass().getName() + "(" + peasant.getID() + ", " + resource.getID() + ")";
+        return "Harvest(" + peasant.getID() + ", " + resource.getID() + ")";
     }
 }

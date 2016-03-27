@@ -106,6 +106,7 @@ public class PlannerAgent extends Agent {
 
             //the plan has been found, if at the goal node
             if (currentState.isGoal()){
+                System.out.print("Omg here we are!");
                 return makePlan(currentState);
             }
 
@@ -115,6 +116,8 @@ public class PlannerAgent extends Agent {
                     .filter(child -> !open.contains(child))
                     .forEach(open::add);
 
+            if (currentState.getParent() != null)
+                System.out.println(currentState.getActionFromParentToThis().toString());
 
             closed.add(currentState);
 

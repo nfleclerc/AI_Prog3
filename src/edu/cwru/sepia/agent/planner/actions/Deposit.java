@@ -46,6 +46,6 @@ public class Deposit extends StripsAction {
 
     @Override
     public String toString(){
-        return getClass().getName() + "(" + peasant.getID() + ", " + townhall.getID() + ")";
+        return "Deposit(" + peasant.getID() + ", " + townhall.getID() + ")";
     }
 }

@@ -46,6 +46,6 @@ public class Move extends StripsAction {
 
     @Override
     public String toString(){
-        return getClass().getName() + "(" + peasant.getID() + ", " + position.toString() + ")";
+        return "Move(" + peasant.getID() + ", " + position.toString() + ")";
     }
 }

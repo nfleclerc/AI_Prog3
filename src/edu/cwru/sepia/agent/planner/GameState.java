@@ -131,11 +131,6 @@ public class GameState implements Comparable<GameState> {
             viablePositions.add(bestPosition);
 
 
-            for (Position position : viablePositions) {
-                System.out.println(position.toString());
-            }
-            System.out.print("all pos printed");
-
             return viablePositions;
         }
 

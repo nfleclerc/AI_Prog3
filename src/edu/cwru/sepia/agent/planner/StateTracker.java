@@ -149,20 +149,74 @@ public class StateTracker {
         double heuristic = requiredGold + requiredWood;
         heuristic -= currentGold;
         heuristic -= currentWood;
-        if (currentGold <= currentWood){
-            //if no gold is had, go to nearest nonempty goldmine
-                //find nearest nonempty goldmine
-                //find distance to it
-                //add the distance to this heuristic
-            //if next to a goldmine harvest
-            //if gold is had, go to the townhall
-                //add distance to this heuristic
-        } else {
-            //if no wood is had, go to nearest nonempty forest
-            //if next to a forest harvest
-            //if wood is had, go to the townhall
+        for (Peasant peasant : peasants) {
+            if (currentGold <= currentWood) {
+                //if no gold is had, go to nearest nonempty goldmine
+                if (peasant.getCargoAmount() == 0) {
+                    //find nearest nonempty goldmine
+                    GoldMine goldMine = findClosestGoldMine(peasant);
+                    //find distance to it
+                    //add the distance to this heuristic
+                    heuristic += goldMine.getPosition().chebyshevDistance(peasant.getPosition()) * 2;
+                } else {
+                    //if next to a goldmine harvest
+                    //if gold is had, go to the townhall
+                    //add distance to this heuristic
+                    heuristic += townhall.getPosition().chebyshevDistance(peasant.getPosition()) * .5;
+                }
+            } else {
+                //if no wood is had, go to nearest nonempty forest
+                if (peasant.getCargoAmount() == 0) {
+                    //find nearest nonempty forest
+                    Forest forest = findClosestForest(peasant);
+                    //find distance to it
+                    //add the distance to this heuristic
+                    heuristic += forest.getPosition().chebyshevDistance(peasant.getPosition()) * 2;
+                } else {
+                    //if next to a goldmine harvest
+                    //if gold is had, go to the townhall
+                    //add distance to this heuristic
+                    heuristic += townhall.getPosition().chebyshevDistance(peasant.getPosition()) * .5;
+                }
+            }
         }
         return heuristic;
+    }
+
+    private Forest findClosestForest(Peasant peasant) {
+        Forest closestForest = null;
+        for (Forest forest : forests){
+            if (forest.getAmountRemaining() > 0){
+                closestForest = forest;
+                break;
+            }
+        }
+        for (Forest forest : forests) {
+            assert closestForest != null;
+            if (forest.getPosition().chebyshevDistance(peasant.getPosition()) <
+                    closestForest.getPosition().chebyshevDistance(peasant.getPosition())) {
+                closestForest = forest;
+            }
+        }
+        return closestForest;
+    }
+
+    private GoldMine findClosestGoldMine(Peasant peasant) {
+        GoldMine closestGoldMine = null;
+        for (GoldMine goldMine : goldMines){
+            if (goldMine.getAmountRemaining() > 0){
+                closestGoldMine = goldMine;
+                break;
+            }
+        }
+        for (GoldMine goldMine : goldMines) {
+            assert closestGoldMine != null;
+            if (goldMine.getPosition().chebyshevDistance(peasant.getPosition()) <
+                    closestGoldMine.getPosition().chebyshevDistance(peasant.getPosition())) {
+                closestGoldMine = goldMine;
+            }
+        }
+        return closestGoldMine;
     }
 
 }
