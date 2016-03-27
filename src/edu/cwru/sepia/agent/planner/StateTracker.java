@@ -184,15 +184,8 @@ public class StateTracker {
     }
 
     private Forest findClosestForest(Peasant peasant) {
-        Forest closestForest = null;
-        for (Forest forest : forests){
-            if (forest.getAmountRemaining() > 0){
-                closestForest = forest;
-                break;
-            }
-        }
+        Forest closestForest = forests.get(0);
         for (Forest forest : forests) {
-            assert closestForest != null;
             if (forest.getPosition().chebyshevDistance(peasant.getPosition()) <
                     closestForest.getPosition().chebyshevDistance(peasant.getPosition())) {
                 closestForest = forest;
@@ -202,17 +195,10 @@ public class StateTracker {
     }
 
     private GoldMine findClosestGoldMine(Peasant peasant) {
-        GoldMine closestGoldMine = null;
-        for (GoldMine goldMine : goldMines){
-            if (goldMine.getAmountRemaining() > 0){
-                closestGoldMine = goldMine;
-                break;
-            }
-        }
+        GoldMine closestGoldMine = goldMines.get(0);
         for (GoldMine goldMine : goldMines) {
             if (goldMine.getPosition().chebyshevDistance(peasant.getPosition()) <
-                    (closestGoldMine != null
-                            ? closestGoldMine.getPosition().chebyshevDistance(peasant.getPosition()) : 0)) {
+                    closestGoldMine.getPosition().chebyshevDistance(peasant.getPosition())) {
                 closestGoldMine = goldMine;
             }
         }

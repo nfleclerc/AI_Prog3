@@ -32,6 +32,9 @@ public class Harvest extends StripsAction {
         Resource childResource = childState.getStateTracker().getResourceById(resource.getID());
         childPeasant.carry(childResource.getType(), 100);
         childResource.harvestAmount(100);
+        if (resource.getAmountRemaining() == 0){
+            childState.removeResource(resource);
+        }
         return childState;
     }
 

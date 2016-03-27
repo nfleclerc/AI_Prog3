@@ -112,16 +112,15 @@ public class GameState implements Comparable<GameState> {
 
         if (peasant.getCargoAmount() == 0) {
             for (Resource resource : stateTracker.getAllResources()) {
-                if (resource.getAmountRemaining() > 0) {
-                    List<Position> adjacentPositions = new ArrayList<>(resource.getPosition().getAdjacentPositions());
-                    Position bestPosition = adjacentPositions.get(0);
-                    for (Position position : adjacentPositions) {
-                        bestPosition = position.chebyshevDistance(currentPosition) <
-                                bestPosition.chebyshevDistance(currentPosition) ? position : bestPosition;
-                    }
-                    viablePositions.add(bestPosition);
+                List<Position> adjacentPositions = new ArrayList<>(resource.getPosition().getAdjacentPositions());
+                Position bestPosition = adjacentPositions.get(0);
+                for (Position position : adjacentPositions) {
+                    bestPosition = position.chebyshevDistance(currentPosition) <
+                            bestPosition.chebyshevDistance(currentPosition) ? position : bestPosition;
                 }
+                viablePositions.add(bestPosition);
             }
+
         } else {
 
             List<Position> adjacentPositionsToTownhall =
