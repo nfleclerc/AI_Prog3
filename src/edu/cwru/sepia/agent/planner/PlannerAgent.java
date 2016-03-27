@@ -128,7 +128,7 @@ public class PlannerAgent extends Agent {
 
     private Stack<StripsAction> makePlan(GameState currentState) {
         Stack<StripsAction> plan = new Stack<>();
-        GameState parentState = currentState.getParent();
+        GameState parentState = currentState;
         //go to each node's parent and add it to the stack of moves
         while(parentState.getParent() != null){
             plan.push(parentState.getActionFromParentToThis());
