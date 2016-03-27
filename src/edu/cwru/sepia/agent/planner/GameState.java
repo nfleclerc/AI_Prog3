@@ -76,6 +76,7 @@ public class GameState implements Comparable<GameState> {
      *
      * @return A list of the possible successor states and their associated actions
      */
+
     public List<GameState> generateChildren() {
         List<GameState> children = new ArrayList<>();
         //for each peasant in this state
@@ -89,11 +90,9 @@ public class GameState implements Comparable<GameState> {
                 }
             }
             //add all possible states resulting from deposits
-            for (Townhall townhall : stateTracker.getTownhalls()){
-                Deposit deposit = new Deposit(peasant, townhall);
-                if (deposit.preconditionsMet(this)){
-                    children.add(deposit.apply(this));
-                }
+            Deposit deposit = new Deposit(peasant, stateTracker.getTownhall());
+            if (deposit.preconditionsMet(this)) {
+                children.add(deposit.apply(this));
             }
             //add all possible states resulting from harvests
             for (Resource resource : stateTracker.getAllResources()){
@@ -106,33 +105,39 @@ public class GameState implements Comparable<GameState> {
         return children;
     }
 
-    private List<Position> generateViablePositions(Peasant peasant) {
-        List<Position> viablePositions = new ArrayList<>();
-        Position currentPosition = peasant.getPosition();
-        for (Resource resource : stateTracker.getAllResources()){
-            List<Position> adjacentPositions = new ArrayList<>(resource.getPosition().getAdjacentPositions());
-            Position bestPosition = adjacentPositions.get(0);
-            for (Position position : adjacentPositions){
+
+    private List<Position> generateViablePositions(Peasant peasant){
+            List<Position> viablePositions = new ArrayList<>();
+            Position currentPosition = peasant.getPosition();
+
+        for (Resource resource : stateTracker.getAllResources()) {
+                List<Position> adjacentPositions = new ArrayList<>(resource.getPosition().getAdjacentPositions());
+                Position bestPosition = adjacentPositions.get(0);
+                for (Position position : adjacentPositions) {
+                    bestPosition = position.chebyshevDistance(currentPosition) <
+                            bestPosition.chebyshevDistance(currentPosition) ? position : bestPosition;
+                }
+                viablePositions.add(bestPosition);
+            }
+
+
+            List<Position> adjacentPositionsToTownhall =
+                    new ArrayList<>(stateTracker.getTownhall().getPosition().getAdjacentPositions());
+            Position bestPosition = adjacentPositionsToTownhall.get(0);
+            for (Position position : adjacentPositionsToTownhall) {
                 bestPosition = position.chebyshevDistance(currentPosition) <
                         bestPosition.chebyshevDistance(currentPosition) ? position : bestPosition;
             }
             viablePositions.add(bestPosition);
-        }
-        for (Townhall townhall : stateTracker.getTownhalls()){
-            List<Position> adjacentPositions = new ArrayList<>(townhall.getPosition().getAdjacentPositions());
-            Position bestPosition = adjacentPositions.get(0);
-            for (Position position : adjacentPositions){
-                bestPosition = position.chebyshevDistance(currentPosition) <
-                        bestPosition.chebyshevDistance(currentPosition) ? position : bestPosition;
+
+
+            for (Position position : viablePositions) {
+                System.out.println(position.toString());
             }
-            viablePositions.add(bestPosition);
+            System.out.print("all pos printed");
+
+            return viablePositions;
         }
-        for (Position position : viablePositions){
-            System.out.println(position.toString());
-        }
-        System.out.print("all pos printed");
-        return viablePositions;
-    }
 
     /**
      * Write your heuristic function here. Remember this must be admissible for the properties of A* to hold. If you
@@ -143,8 +148,7 @@ public class GameState implements Comparable<GameState> {
      * @return The value estimated remaining cost to reach a goal state from this state.
      */
     public double heuristic() {
-        // TODO: Implement me!
-        return 1;
+        return stateTracker.heuristic();
     }
 
     /**

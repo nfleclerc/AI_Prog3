@@ -28,7 +28,7 @@ public class StateTracker {
     private List<Peasant> peasants = new ArrayList<>();
     private List<GoldMine> goldMines = new ArrayList<>();
     private List<Forest> forests = new ArrayList<>();
-    private List<Townhall> townhalls = new ArrayList<>();
+    private Townhall townhall;
 
     /**
      * This constructor initializes this state tracker using another state tracker
@@ -48,7 +48,7 @@ public class StateTracker {
         peasants.addAll(stateTracker.peasants.stream().map(Peasant::new).collect(Collectors.toList()));
         forests.addAll(stateTracker.forests.stream().map(Forest::new).collect(Collectors.toList()));
         goldMines.addAll(stateTracker.goldMines.stream().map(GoldMine::new).collect(Collectors.toList()));
-        townhalls.addAll(stateTracker.townhalls.stream().map(Townhall::new).collect(Collectors.toList()));
+        townhall = new Townhall(stateTracker.getTownhall());
     }
 
     public StateTracker(State.StateView state, int playerNum, int requiredGold, int requiredWood, boolean buildPeasants) {
@@ -72,7 +72,7 @@ public class StateTracker {
             if (unit.getTemplateView().getName().equals("Peasant")){
                 peasants.add(new Peasant(unit));
             } else {
-                townhalls.add(new Townhall(unit));
+                townhall = new Townhall(unit);
             }
         }
     }
@@ -89,7 +89,7 @@ public class StateTracker {
                 peasants.equals(((StateTracker) o).peasants) &&
                 goldMines.equals(((StateTracker) o).goldMines) &&
                 forests.equals(((StateTracker) o).forests) &&
-                townhalls.equals(((StateTracker) o).townhalls);
+                townhall.equals(((StateTracker) o).townhall);
     }
 
     @Override
@@ -99,7 +99,7 @@ public class StateTracker {
                 peasants.hashCode() +
                 goldMines.hashCode() +
                 forests.hashCode() +
-                townhalls.hashCode();
+                townhall.hashCode();
     }
 
 
@@ -114,8 +114,8 @@ public class StateTracker {
         return resources;
     }
 
-    public List<Townhall> getTownhalls() {
-        return townhalls;
+    public Townhall getTownhall() {
+        return townhall;
     }
 
     public void addResource(ResourceType cargoType, int cargoAmount) {
@@ -144,4 +144,25 @@ public class StateTracker {
         }
         return null;
     }
+
+    public double heuristic() {
+        double heuristic = requiredGold + requiredWood;
+        heuristic -= currentGold;
+        heuristic -= currentWood;
+        if (currentGold <= currentWood){
+            //if no gold is had, go to nearest nonempty goldmine
+                //find nearest nonempty goldmine
+                //find distance to it
+                //add the distance to this heuristic
+            //if next to a goldmine harvest
+            //if gold is had, go to the townhall
+                //add distance to this heuristic
+        } else {
+            //if no wood is had, go to nearest nonempty forest
+            //if next to a forest harvest
+            //if wood is had, go to the townhall
+        }
+        return heuristic;
+    }
+
 }
