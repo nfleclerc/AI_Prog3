@@ -224,4 +224,16 @@ public class StateTracker {
         }
         return null;
     }
+
+    public List<GoldMine> getGoldMines() {
+        return goldMines;
+    }
+
+    public List<Forest> getForests() {
+        return forests;
+    }
+
+    public boolean goldNeeded() {
+        return currentGold < currentWood;
+    }
 }
