@@ -1,6 +1,8 @@
 package edu.cwru.sepia.agent.planner;
 
 import edu.cwru.sepia.action.Action;
+import edu.cwru.sepia.action.ActionType;
+import edu.cwru.sepia.action.LocatedAction;
 import edu.cwru.sepia.agent.Agent;
 import edu.cwru.sepia.agent.planner.actions.*;
 import edu.cwru.sepia.environment.model.history.History;
@@ -22,6 +24,7 @@ public class PEAgent extends Agent {
 
     // The plan being executed
     private Stack<StripsAction> plan = null;
+    private Stack<StripsAction> previousStripsActions = new Stack<>();
 
     // maps the real unit Ids to the plan's unit ids
     // when you're planning you won't know the true unit IDs that sepia assigns. So you'll use placeholders (1, 2, 3).
@@ -96,11 +99,32 @@ public class PEAgent extends Agent {
         also action map should probably be saved elsewhere and not created here,
         otherwise it doesnt seem possible to parallelize
          */
+
         Map<Integer, Action> actionMap = new HashMap<>();
         StripsAction nextAction = plan.pop();
-        Unit.UnitView unit = stateView.getUnit(peasantIdMap.get(nextAction.getPeasant().getID()));
-        actionMap.put(unit.getID(), createSepiaAction(nextAction));
+        Action action = createSepiaAction(nextAction);
+        Unit.UnitView unit = stateView.getUnit(nextAction.getPeasant().getID());
+        if (waitForPreviousAction(unit)){
+            actionMap.put(unit.getID(), createSepiaAction(previousStripsActions.peek()));
+        } else {
+            actionMap.put(unit.getID(), action);
+        }
+        previousStripsActions.push(nextAction);
+        System.out.println(action);
         return actionMap;
+    }
+
+    private boolean waitForPreviousAction(Unit.UnitView unitView) {
+        if (!previousStripsActions.isEmpty()) {
+                if (previousStripsActions.peek().getType() == SepiaActionType.MOVE) {
+                    Move prevStripsAction = (Move) previousStripsActions.peek();
+                    if (unitView.getXPosition() != prevStripsAction.targetPosition().x &&
+                            unitView.getYPosition() != prevStripsAction.targetPosition().y) {
+                        return true;
+                    }
+                }
+            }
+        return false;
     }
 
     /**
@@ -113,8 +137,8 @@ public class PEAgent extends Agent {
             case MOVE:
                 return Action.createCompoundMove(
                         action.getPeasant().getID(),
-                        action.getPeasant().getPosition().x,
-                        action.getPeasant().getPosition().y
+                        action.targetPosition().x,
+                        action.targetPosition().y
                 );
             case HARVEST:
                 return Action.createPrimitiveGather(

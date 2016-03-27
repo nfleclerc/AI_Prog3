@@ -82,6 +82,13 @@ public class GameState implements Comparable<GameState> {
         //for each peasant in this state
         for (Peasant peasant : stateTracker.getPeasants()) {
             //generate List of positions that are hunkey-dorey
+            List<Position> viablePositions = generateViablePositions(peasant);
+            for (Position position : viablePositions){
+                Move move = new Move(peasant, position);
+                if (move.preconditionsMet(this)){
+                    children.add(move.apply(this));
+                }
+            }
             //add all possible states resulting from deposits
             Deposit deposit = new Deposit(peasant, stateTracker.getTownhall());
             if (deposit.preconditionsMet(this)) {
@@ -92,13 +99,6 @@ public class GameState implements Comparable<GameState> {
                 Harvest harvest = new Harvest(peasant, resource);
                 if (harvest.preconditionsMet(this)){
                     children.add(harvest.apply(this));
-                }
-            }
-            List<Position> viablePositions = generateViablePositions(peasant);
-            for (Position position : viablePositions){
-                Move move = new Move(peasant, position);
-                if (move.preconditionsMet(this)){
-                    children.add(move.apply(this));
                 }
             }
         }
