@@ -97,6 +97,7 @@ public class PEAgent extends Agent {
         otherwise it doesnt seem possible to parallelize
          */
         Map<Integer, Action> actionMap = new HashMap<>();
+        System.out.println(plan.peek());
         StripsAction nextAction = plan.pop();
         actionMap.put(nextAction.getPeasant().getID(), createSepiaAction(nextAction));
         return actionMap;
