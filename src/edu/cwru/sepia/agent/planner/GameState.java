@@ -82,13 +82,6 @@ public class GameState implements Comparable<GameState> {
         //for each peasant in this state
         for (Peasant peasant : stateTracker.getPeasants()) {
             //generate List of positions that are hunkey-dorey
-            List<Position> viablePositions = generateViablePositions(peasant);
-            for (Position position : viablePositions){
-                Move move = new Move(peasant, position);
-                if (move.preconditionsMet(this)){
-                    children.add(move.apply(this));
-                }
-            }
             //add all possible states resulting from deposits
             Deposit deposit = new Deposit(peasant, stateTracker.getTownhall());
             if (deposit.preconditionsMet(this)) {
@@ -101,25 +94,35 @@ public class GameState implements Comparable<GameState> {
                     children.add(harvest.apply(this));
                 }
             }
+            List<Position> viablePositions = generateViablePositions(peasant);
+            for (Position position : viablePositions){
+                Move move = new Move(peasant, position);
+                if (move.preconditionsMet(this)){
+                    children.add(move.apply(this));
+                }
+            }
         }
         return children;
     }
 
 
-    private List<Position> generateViablePositions(Peasant peasant){
-            List<Position> viablePositions = new ArrayList<>();
-            Position currentPosition = peasant.getPosition();
+    private List<Position> generateViablePositions(Peasant peasant) {
+        List<Position> viablePositions = new ArrayList<>();
+        Position currentPosition = peasant.getPosition();
 
-        for (Resource resource : stateTracker.getAllResources()) {
-                List<Position> adjacentPositions = new ArrayList<>(resource.getPosition().getAdjacentPositions());
-                Position bestPosition = adjacentPositions.get(0);
-                for (Position position : adjacentPositions) {
-                    bestPosition = position.chebyshevDistance(currentPosition) <
-                            bestPosition.chebyshevDistance(currentPosition) ? position : bestPosition;
+        if (peasant.getCargoAmount() == 0) {
+            for (Resource resource : stateTracker.getAllResources()) {
+                if (resource.getAmountRemaining() > 0) {
+                    List<Position> adjacentPositions = new ArrayList<>(resource.getPosition().getAdjacentPositions());
+                    Position bestPosition = adjacentPositions.get(0);
+                    for (Position position : adjacentPositions) {
+                        bestPosition = position.chebyshevDistance(currentPosition) <
+                                bestPosition.chebyshevDistance(currentPosition) ? position : bestPosition;
+                    }
+                    viablePositions.add(bestPosition);
                 }
-                viablePositions.add(bestPosition);
             }
-
+        } else {
 
             List<Position> adjacentPositionsToTownhall =
                     new ArrayList<>(stateTracker.getTownhall().getPosition().getAdjacentPositions());
@@ -129,10 +132,11 @@ public class GameState implements Comparable<GameState> {
                         bestPosition.chebyshevDistance(currentPosition) ? position : bestPosition;
             }
             viablePositions.add(bestPosition);
-
-
-            return viablePositions;
         }
+
+
+        return viablePositions;
+    }
 
     /**
      * Write your heuristic function here. Remember this must be admissible for the properties of A* to hold. If you

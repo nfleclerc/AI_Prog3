@@ -210,9 +210,9 @@ public class StateTracker {
             }
         }
         for (GoldMine goldMine : goldMines) {
-            assert closestGoldMine != null;
             if (goldMine.getPosition().chebyshevDistance(peasant.getPosition()) <
-                    closestGoldMine.getPosition().chebyshevDistance(peasant.getPosition())) {
+                    (closestGoldMine != null
+                            ? closestGoldMine.getPosition().chebyshevDistance(peasant.getPosition()) : 0)) {
                 closestGoldMine = goldMine;
             }
         }
