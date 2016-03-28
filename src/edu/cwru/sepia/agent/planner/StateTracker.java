@@ -24,18 +24,20 @@ public class StateTracker {
     private int currentGold;
     private int requiredWood;
     private int requiredGold;
+    private int currentFood;
     private boolean buildPeasants;
     private List<Peasant> peasants = new ArrayList<>();
     private List<GoldMine> goldMines = new ArrayList<>();
     private List<Forest> forests = new ArrayList<>();
     private Townhall townhall;
+    private GameState parent;
 
     /**
      * This constructor initializes this state tracker using another state tracker
      *
      * @param stateTracker The state tracker to represent by this tracker
      */
-    public StateTracker(StateTracker stateTracker) {
+    public StateTracker(StateTracker stateTracker, GameState parent) {
         xExtent = stateTracker.xExtent;
         yExtent = stateTracker.yExtent;
         turnNumber = stateTracker.turnNumber;
@@ -49,6 +51,7 @@ public class StateTracker {
         forests.addAll(stateTracker.forests.stream().map(Forest::new).collect(Collectors.toList()));
         goldMines.addAll(stateTracker.goldMines.stream().map(GoldMine::new).collect(Collectors.toList()));
         townhall = new Townhall(stateTracker.getTownhall());
+        this.parent = parent;
     }
 
     public StateTracker(State.StateView state, int playerNum, int requiredGold, int requiredWood, boolean buildPeasants) {
@@ -180,6 +183,9 @@ public class StateTracker {
                 }
             }
         }
+        if (peasants.size() > parent.getStateTracker().getPeasants().size()){
+            return 0;
+        }
         return heuristic;
     }
 
@@ -235,5 +241,22 @@ public class StateTracker {
 
     public boolean goldNeeded() {
         return currentGold < currentWood;
+    }
+
+    public int getCurrentGold() {
+        return currentGold;
+    }
+
+    public int getCurrentFood() {
+        return currentFood;
+    }
+
+    public void buyPeasant() {
+        currentGold -= 400;
+        currentFood -= 1;
+    }
+
+    public boolean mustBuildPeasants() {
+        return buildPeasants;
     }
 }

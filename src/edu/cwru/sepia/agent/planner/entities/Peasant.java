@@ -3,6 +3,7 @@ package edu.cwru.sepia.agent.planner.entities;
 import edu.cwru.sepia.agent.planner.Position;
 import edu.cwru.sepia.environment.model.state.ResourceType;
 import edu.cwru.sepia.environment.model.state.Unit;
+import edu.cwru.sepia.util.Direction;
 
 /**
  * Created by nathaniel on 3/21/16.
@@ -23,6 +24,13 @@ public class Peasant extends StripsUnit{
         super(unitView);
         cargoAmount = unitView.getCargoAmount();
         cargoType = unitView.getCargoType();
+    }
+
+    public Peasant(Townhall townhall) {
+        id = 2;
+        position = new Position(townhall.getPosition().move(Direction.SOUTH));
+        cargoAmount = 0;
+        cargoType = null;
     }
 
     @Override

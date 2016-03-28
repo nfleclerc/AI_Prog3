@@ -145,6 +145,8 @@ public class PEAgent extends Agent {
                         action.getUnit().getPosition().getDirection(
                                 action.targetPosition())
                 );
+            case BUILD:
+                return Action.createPrimitiveBuild(townhallId, peasantTemplateId);
             default:
                 return null;
         }

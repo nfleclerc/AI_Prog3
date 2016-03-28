@@ -21,6 +21,9 @@ public abstract class StripsUnit {
         position = new Position(unitView.getXPosition(), unitView.getYPosition());
     }
 
+    protected StripsUnit() {
+    }
+
     public Position getPosition() {
         return position;
     }

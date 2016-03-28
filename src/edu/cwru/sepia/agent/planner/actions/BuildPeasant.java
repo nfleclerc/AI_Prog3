@@ -3,7 +3,6 @@ package edu.cwru.sepia.agent.planner.actions;
 import edu.cwru.sepia.agent.planner.GameState;
 import edu.cwru.sepia.agent.planner.Position;
 import edu.cwru.sepia.agent.planner.entities.Peasant;
-import edu.cwru.sepia.agent.planner.entities.StripsUnit;
 import edu.cwru.sepia.agent.planner.entities.Townhall;
 
 /**
@@ -11,22 +10,33 @@ import edu.cwru.sepia.agent.planner.entities.Townhall;
  */
 public class BuildPeasant extends StripsAction {
 
+    private final Townhall townhall;
+
     public BuildPeasant(Townhall townhall) {
         super(townhall);
+        this.townhall = townhall;
     }
 
     @Override
     public boolean preconditionsMet(GameState state) {
-        return false;
+        return state.getStateTracker().getCurrentGold() >= 400 && state.getStateTracker().getCurrentFood() >= 1;
     }
 
     @Override
     public GameState apply(GameState state) {
-        return null;
+        GameState childState = new GameState(state, this);
+        childState.getStateTracker().buyPeasant();
+        childState.getStateTracker().getPeasants().add(new Peasant(townhall));
+        return childState;
     }
 
     @Override
     public Position targetPosition() {
         return null;
+    }
+
+    @Override
+    public String toString(){
+        return "BuildPeasant(" + townhall.getID() + ")";
     }
 }

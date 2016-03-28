@@ -1,9 +1,6 @@
 package edu.cwru.sepia.agent.planner;
 
-import edu.cwru.sepia.agent.planner.actions.Deposit;
-import edu.cwru.sepia.agent.planner.actions.Harvest;
-import edu.cwru.sepia.agent.planner.actions.Move;
-import edu.cwru.sepia.agent.planner.actions.StripsAction;
+import edu.cwru.sepia.agent.planner.actions.*;
 import edu.cwru.sepia.agent.planner.entities.Peasant;
 import edu.cwru.sepia.agent.planner.entities.Resource;
 import edu.cwru.sepia.agent.planner.entities.Townhall;
@@ -52,7 +49,7 @@ public class GameState implements Comparable<GameState> {
     public GameState(GameState parent, StripsAction actionFromParentToThis){
         this.parent = parent;
         this.actionFromParentToThis = actionFromParentToThis;
-        this.stateTracker = new StateTracker(parent.getStateTracker());
+        this.stateTracker = new StateTracker(parent.getStateTracker(), parent);
     }
 
     public StateTracker getStateTracker() {
@@ -99,6 +96,12 @@ public class GameState implements Comparable<GameState> {
                 Harvest harvest = new Harvest(peasant, resource);
                 if (harvest.preconditionsMet(this)){
                     children.add(harvest.apply(this));
+                }
+            }
+            if (stateTracker.mustBuildPeasants()) {
+                BuildPeasant buildPeasant = new BuildPeasant(stateTracker.getTownhall());
+                if (buildPeasant.preconditionsMet(this)){
+                    children.add(buildPeasant.apply(this));
                 }
             }
         }
