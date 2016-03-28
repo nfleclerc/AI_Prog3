@@ -2,7 +2,6 @@ package edu.cwru.sepia.agent.planner.actions;
 
 import edu.cwru.sepia.agent.planner.GameState;
 import edu.cwru.sepia.agent.planner.Position;
-import edu.cwru.sepia.agent.planner.entities.Peasant;
 import edu.cwru.sepia.agent.planner.entities.StripsUnit;
 
 /**
