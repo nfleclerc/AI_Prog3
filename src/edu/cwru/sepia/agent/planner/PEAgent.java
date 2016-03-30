@@ -98,7 +98,6 @@ public class PEAgent extends Agent {
         Map<Integer, Action> actionMap = new HashMap<>();
         populateUnitMap(stateView);
         Unit.UnitView unit = stateView.getUnit(peasantIdMap.get(plan.peek().getUnit().getID()));
-        System.out.println(unit.getID());
         if (waitForPreviousAction(unit)){
             actionMap.put(unit.getID(), createSepiaAction(previousStripsActions.peek()));
         } else {
