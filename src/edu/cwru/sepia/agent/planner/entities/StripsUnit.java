@@ -7,7 +7,6 @@ import edu.cwru.sepia.environment.model.state.Unit;
  * Created by nathaniel on 3/27/16.
  */
 public abstract class StripsUnit {
-
     protected int id;
     protected Position position;
 

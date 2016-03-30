@@ -81,8 +81,32 @@ public class GameState implements Comparable<GameState> {
             BuildPeasant buildPeasant = new BuildPeasant(stateTracker.getTownhall());
             if (buildPeasant.preconditionsMet(this)) {
                 children.add(buildPeasant.apply(this));
+            } else {
+                //for each peasant in this state
+                for (Peasant peasant : stateTracker.getPeasants()) {
+                    //generate List of positions that are hunkey-dorey
+                    List<Position> viablePositions = generateViablePositions(peasant);
+                    for (Position position : viablePositions) {
+                        Move move = new Move(peasant, position);
+                        if (move.preconditionsMet(this)) {
+                            children.add(move.apply(this));
+                        }
+                    }
+                    //add all possible states resulting from deposits
+                    Deposit deposit = new Deposit(peasant, stateTracker.getTownhall());
+                    if (deposit.preconditionsMet(this)) {
+                        children.add(deposit.apply(this));
+                    }
+                    //add all possible states resulting from harvests
+                    for (Resource resource : stateTracker.getAllResources()) {
+                        Harvest harvest = new Harvest(peasant, resource);
+                        if (harvest.preconditionsMet(this)) {
+                            children.add(harvest.apply(this));
+                        }
+                    }
+                }
             }
-
+        } else {
             //for each peasant in this state
             for (Peasant peasant : stateTracker.getPeasants()) {
                 //generate List of positions that are hunkey-dorey

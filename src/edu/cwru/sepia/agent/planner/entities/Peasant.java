@@ -28,7 +28,7 @@ public class Peasant extends StripsUnit{
 
     public Peasant(Townhall townhall) {
         id = 2;
-        position = new Position(townhall.getPosition().move(Direction.SOUTH));
+        position = new Position(townhall.getPosition().move(Direction.WEST));
         cargoAmount = 0;
         cargoType = null;
     }

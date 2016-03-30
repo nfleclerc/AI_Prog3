@@ -96,14 +96,21 @@ public class PEAgent extends Agent {
     @Override
     public Map<Integer, Action> middleStep(State.StateView stateView, History.HistoryView historyView) {
         Map<Integer, Action> actionMap = new HashMap<>();
-        Unit.UnitView unit = stateView.getUnit(1);
+        Unit.UnitView unit;
+        if (previousStripsActions.isEmpty()) {
+            unit = stateView.getUnit(1);
+        } else {
+            unit = stateView.getUnit(previousStripsActions.peek().getUnit().getID());
+        }
         if (waitForPreviousAction(unit)){
             actionMap.put(unit.getID(), createSepiaAction(previousStripsActions.peek()));
         } else {
             StripsAction nextAction = plan.pop();
-            actionMap.put(unit.getID(), createSepiaAction(nextAction));
+            actionMap.put(nextAction.getUnit().getID(), createSepiaAction(nextAction));
             previousStripsActions.push(nextAction);
+            System.out.println(nextAction.getUnit().getID());
         }
+        System.out.println(actionMap);
         return actionMap;
     }
 
@@ -111,7 +118,8 @@ public class PEAgent extends Agent {
         if (!previousStripsActions.isEmpty()) {
                 if (previousStripsActions.peek().getType() == SepiaActionType.MOVE) {
                     Move prevStripsAction = (Move) previousStripsActions.peek();
-                    if (unitView.getXPosition() != prevStripsAction.targetPosition().x &&
+                    if (unitView.getID() == prevStripsAction.getUnit().getID() &&
+                            unitView.getXPosition() != prevStripsAction.targetPosition().x &&
                             unitView.getYPosition() != prevStripsAction.targetPosition().y) {
                         return true;
                     }
