@@ -82,7 +82,7 @@ public class GameState implements Comparable<GameState> {
             if (buildPeasant.preconditionsMet(this)) {
                 children.add(buildPeasant.apply(this));
             }
-        }
+
             //for each peasant in this state
             for (Peasant peasant : stateTracker.getPeasants()) {
                 //generate List of positions that are hunkey-dorey
@@ -106,7 +106,7 @@ public class GameState implements Comparable<GameState> {
                     }
                 }
             }
-
+        }
         return children;
     }
 

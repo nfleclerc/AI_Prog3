@@ -52,6 +52,7 @@ public class StateTracker {
         goldMines.addAll(stateTracker.goldMines.stream().map(GoldMine::new).collect(Collectors.toList()));
         townhall = new Townhall(stateTracker.getTownhall());
         this.parent = parent;
+        currentFood = stateTracker.currentFood;
     }
 
     public StateTracker(State.StateView state, int playerNum, int requiredGold, int requiredWood, boolean buildPeasants) {
@@ -64,6 +65,7 @@ public class StateTracker {
         this.buildPeasants = buildPeasants;
         currentGold = 0;
         currentWood = 0;
+        currentFood = 1;
         for (ResourceNode.ResourceView resource : state.getAllResourceNodes()) {
             if (resource.getType() == ResourceNode.Type.GOLD_MINE) {
                 goldMines.add(new GoldMine(resource));

@@ -15,6 +15,7 @@ public class BuildPeasant extends StripsAction {
     public BuildPeasant(Townhall townhall) {
         super(townhall);
         this.townhall = townhall;
+        type = SepiaActionType.BUILD;
     }
 
     @Override
@@ -39,4 +40,5 @@ public class BuildPeasant extends StripsAction {
     public String toString(){
         return "BuildPeasant(" + townhall.getID() + ")";
     }
+
 }
