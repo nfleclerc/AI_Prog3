@@ -255,7 +255,7 @@ public class StateTracker {
 
     public void buyPeasant() {
         currentGold -= 400;
-        currentFood -= 1;
+        currentFood += 1;
     }
 
     public boolean mustBuildPeasants() {

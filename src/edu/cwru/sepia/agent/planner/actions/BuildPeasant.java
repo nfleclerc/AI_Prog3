@@ -5,12 +5,15 @@ import edu.cwru.sepia.agent.planner.Position;
 import edu.cwru.sepia.agent.planner.entities.Peasant;
 import edu.cwru.sepia.agent.planner.entities.Townhall;
 
+import java.util.List;
+
 /**
  * Created by nathaniel on 3/27/16.
  */
 public class BuildPeasant extends StripsAction {
 
     private final Townhall townhall;
+    private GameState gameState;
 
     public BuildPeasant(Townhall townhall) {
         super(townhall);
@@ -20,14 +23,16 @@ public class BuildPeasant extends StripsAction {
 
     @Override
     public boolean preconditionsMet(GameState state) {
-        return state.getStateTracker().getCurrentGold() >= 400 && state.getStateTracker().getCurrentFood() >= 1;
+        return state.getStateTracker().getCurrentGold() >= 400 && state.getStateTracker().getCurrentFood() <= 3;
     }
 
     @Override
     public GameState apply(GameState state) {
+        gameState = state;
         GameState childState = new GameState(state, this);
         childState.getStateTracker().buyPeasant();
-        childState.getStateTracker().getPeasants().add(new Peasant(townhall));
+        List<Peasant> childPeasants = childState.getStateTracker().getPeasants();
+        childPeasants.add(new Peasant(townhall, childPeasants));
         return childState;
     }
 
@@ -39,6 +44,10 @@ public class BuildPeasant extends StripsAction {
     @Override
     public String toString(){
         return "BuildPeasant(" + townhall.getID() + ")";
+    }
+
+    public Integer newPeasantId(){
+        return gameState.getStateTracker().getPeasants().size();
     }
 
 }

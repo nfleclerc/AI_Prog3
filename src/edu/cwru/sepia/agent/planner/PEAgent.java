@@ -96,22 +96,25 @@ public class PEAgent extends Agent {
     @Override
     public Map<Integer, Action> middleStep(State.StateView stateView, History.HistoryView historyView) {
         Map<Integer, Action> actionMap = new HashMap<>();
-        Unit.UnitView unit;
-        if (previousStripsActions.isEmpty()) {
-            unit = stateView.getUnit(1);
-        } else {
-            unit = stateView.getUnit(previousStripsActions.peek().getUnit().getID());
-        }
+        populateUnitMap(stateView);
+        Unit.UnitView unit = stateView.getUnit(peasantIdMap.get(plan.peek().getUnit().getID()));
+        System.out.println(unit.getID());
         if (waitForPreviousAction(unit)){
             actionMap.put(unit.getID(), createSepiaAction(previousStripsActions.peek()));
         } else {
             StripsAction nextAction = plan.pop();
-            actionMap.put(nextAction.getUnit().getID(), createSepiaAction(nextAction));
+            actionMap.put(peasantIdMap.get(nextAction.getUnit().getID()), createSepiaAction(nextAction));
             previousStripsActions.push(nextAction);
-            System.out.println(nextAction.getUnit().getID());
         }
-        System.out.println(actionMap);
         return actionMap;
+    }
+
+    private void populateUnitMap(State.StateView stateView){
+        int i = 0;
+        for (Unit.UnitView unitView : stateView.getAllUnits()){
+            peasantIdMap.putIfAbsent(unitView.getID(), i++);
+            System.out.println(peasantIdMap);
+        }
     }
 
     private boolean waitForPreviousAction(Unit.UnitView unitView) {

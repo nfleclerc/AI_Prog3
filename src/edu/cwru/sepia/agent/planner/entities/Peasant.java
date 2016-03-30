@@ -5,6 +5,8 @@ import edu.cwru.sepia.environment.model.state.ResourceType;
 import edu.cwru.sepia.environment.model.state.Unit;
 import edu.cwru.sepia.util.Direction;
 
+import java.util.List;
+
 /**
  * Created by nathaniel on 3/21/16.
  *
@@ -26,8 +28,8 @@ public class Peasant extends StripsUnit{
         cargoType = unitView.getCargoType();
     }
 
-    public Peasant(Townhall townhall) {
-        id = 2;
+    public Peasant(Townhall townhall, List<Peasant> peasants) {
+        id = peasants.size();
         position = new Position(townhall.getPosition().move(Direction.WEST));
         cargoAmount = 0;
         cargoType = null;
