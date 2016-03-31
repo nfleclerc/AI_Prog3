@@ -43,6 +43,7 @@ public class HarvestK extends StripsAction {
                 Peasant childPeasant = childState.getStateTracker().getPeasantById(peasant.getID());
                 Resource childResource = childState.getStateTracker().getResourceById(
                         peasantsAtResource.get(peasant).getID());
+
                 childPeasant.carry(childResource.getType(), 100);
                 childResource.harvestAmount(100);
                 if (childResource.getAmountRemaining() <= 0) {
