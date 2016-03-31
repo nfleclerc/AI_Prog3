@@ -21,12 +21,12 @@ public class MoveK extends StripsAction {
     @Override
     public boolean preconditionsMet(GameState state) {
         for (Position position : positions) {
-            if (!position.inBounds(state.getStateTracker().getXExtent(),
+            if (position.inBounds(state.getStateTracker().getXExtent(),
                                 state.getStateTracker().getYExtent())){
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     @Override

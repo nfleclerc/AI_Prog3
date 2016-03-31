@@ -21,12 +21,12 @@ public class DepositK extends StripsAction {
     @Override
     public boolean preconditionsMet(GameState state) {
         for (Peasant peasant : peasants){
-            if(!(peasant.getCargoAmount() > 0 &&
+            if((peasant.getCargoAmount() > 0 &&
                     peasant.getPosition().isAdjacent(townhall.getPosition()))){
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     @Override

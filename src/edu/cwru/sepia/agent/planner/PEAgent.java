@@ -98,7 +98,6 @@ public class PEAgent extends Agent {
         if (stateView.getTurnNumber() != 0) {
             for (ActionResult result :
                     historyView.getCommandFeedback(playernum, stateView.getTurnNumber() - 1).values()) {
-                System.out.println(result);
                 if (result.getFeedback() != ActionFeedback.COMPLETED) {
                     actionMap.put(result.getAction().getUnitId(), result.getAction());
                 } else if (result.getFeedback() == ActionFeedback.COMPLETED) {
@@ -126,7 +125,7 @@ public class PEAgent extends Agent {
      */
     private Map<Integer, Action> createSepiaAction(StripsAction action) {
         Map<Integer, Action> actionMap = new HashMap<>();
-        for (int i = 0; i < peasantIdMap.size(); i++) {
+        for (int i = 0; i < peasantIdMap.size() - 1; i++) {
             int id = peasantIdMap.get(action.getUnit(i).getID());
             switch (action.getType()) {
                 case MOVE:
@@ -135,20 +134,24 @@ public class PEAgent extends Agent {
                             action.targetPosition(i).x,
                             action.targetPosition(i).y
                     ));
+                    break;
                 case HARVEST:
                     actionMap.put(id, Action.createPrimitiveGather(
                             id,
                             action.getUnit(i).getPosition().getDirection(
                                     action.targetPosition(i))
                     ));
+                    break;
                 case DEPOSIT:
                     actionMap.put(id, Action.createPrimitiveDeposit(
                             id,
                             action.getUnit(i).getPosition().getDirection(
                                     action.targetPosition(i))
                     ));
+                    break;
                 case BUILD:
                     actionMap.put(townhallId, Action.createPrimitiveBuild(townhallId, peasantTemplateId));
+                    break;
                 default:
             }
         }

@@ -93,7 +93,7 @@ public class GameState implements Comparable<GameState> {
 
     private void generateSomeStuff(List<GameState> children) {
 
-        MoveK move = new MoveK(stateTracker.getPeasants(), generateViablePositions(stateTracker.getPeasants()));
+        MoveK move = new MoveK(stateTracker.getPeasants(), generateViablePositions());
         if (move.preconditionsMet(this)) {
             children.add(move.apply(this));
         }
@@ -103,10 +103,14 @@ public class GameState implements Comparable<GameState> {
             children.add(deposit.apply(this));
         }
         //add all possible states resulting from harvests
-        HarvestK harvest = new HarvestK(stateTracker.getPeasants(), stateTracker.getAllResources());
-        if (harvest.preconditionsMet(this)) {
-            children.add(harvest.apply(this));
+        for (Resource resource: stateTracker.getAllResources()) {
+            HarvestK harvest = new HarvestK(stateTracker.getPeasants(), resource);
+            if (harvest.preconditionsMet(this)) {
+                children.add(harvest.apply(this));
+            }
+
         }
+
     }
 
     private List<Position> generateViablePositions(List<Peasant> peasants) {
@@ -129,17 +133,69 @@ public class GameState implements Comparable<GameState> {
                 positions.add(getBestPosition(peasant,
                         stateTracker.getTownhall().getPosition().getAdjacentPositions()));
             }
-            System.out.println(positions);
             viablePositions.add(getBestPosition(peasant, positions));
         }
+
+        System.out.println(viablePositions);
+        return viablePositions;
+
+    }
+
+    private List<Position> generateViablePositions() {
+        List<Position> viablePositions = new ArrayList<>();
+
+        for (Peasant peasant : stateTracker.getPeasants()) {
+
+            Position currentPosition = peasant.getPosition();
+
+            if (peasant.getCargoAmount() == 0) {
+
+                if (stateTracker.goldNeeded()) {
+                    for (Resource resource : stateTracker.getGoldMines()) {
+                        if (resource.getAmountRemaining() > 0) {
+                            List<Position> adjacentPositions = new ArrayList<>(resource.getPosition().getAdjacentPositions());
+                            Position bestPosition = adjacentPositions.get(0);
+                            for (Position position : adjacentPositions) {
+                                bestPosition = position.chebyshevDistance(currentPosition) <
+                                        bestPosition.chebyshevDistance(currentPosition) ? position : bestPosition;
+                            }
+                            viablePositions.add(bestPosition);
+                        }
+                    }
+                } else {
+                    for (Resource resource : stateTracker.getForests()) {
+                        if (resource.getAmountRemaining() > 0) {
+                            List<Position> adjacentPositions = new ArrayList<>(resource.getPosition().getAdjacentPositions());
+                            Position bestPosition = adjacentPositions.get(0);
+                            for (Position position : adjacentPositions) {
+                                bestPosition = position.chebyshevDistance(currentPosition) <
+                                        bestPosition.chebyshevDistance(currentPosition) ? position : bestPosition;
+                            }
+                            viablePositions.add(bestPosition);
+                        }
+                    }
+                }
+
+            } else {
+
+                List<Position> adjacentPositionsToTownhall =
+                        new ArrayList<>(stateTracker.getTownhall().getPosition().getAdjacentPositions());
+                Position bestPosition = adjacentPositionsToTownhall.get(0);
+                for (Position position : adjacentPositionsToTownhall) {
+                    bestPosition = position.chebyshevDistance(currentPosition) <
+                            bestPosition.chebyshevDistance(currentPosition) ? position : bestPosition;
+                }
+                viablePositions.add(bestPosition);
+            }
+        }
+
         return viablePositions;
     }
 
     private Position getBestPosition(Peasant peasant, List<Position> positions) {
         Position currentPosition = peasant.getPosition();
         Position bestPosition = positions.get(0);
-        for (Position position :
-                positions) {
+        for (Position position : positions) {
             bestPosition = position.chebyshevDistance(currentPosition) <
                     bestPosition.chebyshevDistance(currentPosition) ? position : bestPosition;
         }

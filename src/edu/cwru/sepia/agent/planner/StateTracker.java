@@ -189,9 +189,6 @@ public class StateTracker {
         if (peasants.size() > parent.getStateTracker().getPeasants().size()){
             return 0;
         }
-        if (containsDuplicatePositions(peasants)){
-            return Double.POSITIVE_INFINITY;
-        }
         return heuristic;
     }
 
@@ -252,7 +249,7 @@ public class StateTracker {
     }
 
     public boolean goldNeeded() {
-        return currentGold < currentWood;
+        return currentGold <= currentWood;
     }
 
     public int getCurrentGold() {
@@ -270,5 +267,9 @@ public class StateTracker {
 
     public boolean mustBuildPeasants() {
         return buildPeasants;
+    }
+
+    public int getCurrentWood() {
+        return currentWood;
     }
 }
