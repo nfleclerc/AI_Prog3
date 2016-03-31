@@ -3,6 +3,7 @@ package edu.cwru.sepia.agent.planner.actions;
 import edu.cwru.sepia.agent.planner.GameState;
 import edu.cwru.sepia.agent.planner.Position;
 import edu.cwru.sepia.agent.planner.entities.StripsUnit;
+import java.util.List;
 
 /**
  * A useful start of an interface representing strips actions. You may add new methods to this interface if needed, but
@@ -12,11 +13,11 @@ import edu.cwru.sepia.agent.planner.entities.StripsUnit;
 public abstract class StripsAction {
 
     protected SepiaActionType type;
-    protected final StripsUnit unit;
+    protected final List<? extends StripsUnit> units;
 
 
-    public StripsAction(StripsUnit unit){
-        this.unit = unit;
+    public StripsAction(List<? extends StripsUnit> units){
+        this.units = units;
     }
 
 
@@ -57,7 +58,7 @@ public abstract class StripsAction {
         return unit;
     }
 
-    public abstract Position targetPosition();
+    public abstract Position targetPosition(int index);
 
     public double getCost(){
         return 0;
