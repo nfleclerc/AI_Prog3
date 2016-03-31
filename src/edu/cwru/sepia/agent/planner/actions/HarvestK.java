@@ -27,15 +27,13 @@ public class HarvestK extends StripsAction {
     @Override
     public boolean preconditionsMet(GameState state) {
         for (Peasant peasant : peasants) {
-            if ((peasant.getCargoAmount() != 0 ||
-                    resource.getAmountRemaining() <= 0 ||
-                    !peasant.getPosition().isAdjacent(resource.getPosition()))) {
-                return false;
-            } else {
-                peasantsAtResource.put(peasant, resource);
+            if ((peasant.getCargoAmount() == 0 &&
+                    resource.getAmountRemaining() > 0 &&
+                    peasant.getPosition().isAdjacent(resource.getPosition()))) {
+                        peasantsAtResource.put(peasant, resource);
+                    }
             }
-        }
-        return true;
+        return !peasantsAtResource.isEmpty();
     }
 
     @Override
@@ -49,7 +47,6 @@ public class HarvestK extends StripsAction {
                 childResource.harvestAmount(100);
                 if (childResource.getAmountRemaining() <= 0) {
                     childState.removeResource(childResource);
-
                 }
         }
         return childState;
@@ -65,7 +62,7 @@ public class HarvestK extends StripsAction {
         StringBuilder sb = new StringBuilder();
         sb.append("Harvest:");
         for (Peasant peasant : peasants){
-            sb.append("\n\t(" + peasant.getID() + ", " + resource.getID() + ")");
+            sb.append("\t(" + peasant.getID() + ", " + resource.getID() + ")");
         }
         return sb.toString();
     }

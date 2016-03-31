@@ -94,11 +94,9 @@ public class GameState implements Comparable<GameState> {
 
     private void generateSomeStuff(List<GameState> children) {
 
-        for (Position position : generateViablePositions()) {
-            MoveK move = new MoveK(stateTracker.getPeasants(), position);
-            if (move.preconditionsMet(this)) {
-                children.add(move.apply(this));
-            }
+        MoveK move = new MoveK(stateTracker.getPeasants(), generatePositions());
+        if (move.preconditionsMet(this)) {
+            children.add(move.apply(this));
         }
         //add all possible states resulting from deposits
         DepositK deposit = new DepositK(stateTracker.getPeasants(), stateTracker.getTownhall());
@@ -106,42 +104,49 @@ public class GameState implements Comparable<GameState> {
             children.add(deposit.apply(this));
         }
         //add all possible states resulting from harvests
-        for (Resource resource: stateTracker.getAllResources()) {
+        for (Resource resource : stateTracker.getAllResources()) {
             HarvestK harvest = new HarvestK(stateTracker.getPeasants(), resource);
             if (harvest.preconditionsMet(this)) {
                 children.add(harvest.apply(this));
             }
 
         }
-
     }
 
-    private Collection<Position> generateViablePositions() {
+    private Map<Peasant, Position> generatePositions() {
+        Map<Peasant, Position> peasantPositionMap = new HashMap<>();
+        for (Peasant peasant : stateTracker.getPeasants()){
+            for (Position position : generateViablePositions(peasant)){
+                peasantPositionMap.put(peasant, position);
+            }
+        }
+        return peasantPositionMap;
+    }
 
-        Set<Position> viablePositions = new HashSet<>();
+    private List<Position> generateViablePositions(Peasant peasant) {
 
-        for (Peasant peasant : stateTracker.getPeasants()) {
-            List<Position> positions = new ArrayList<>();
-            if (peasant.getCargoAmount() == 0) {
-                if (stateTracker.goldNeeded()) {
-                    for (GoldMine goldMine : stateTracker.getGoldMines()){
-                        positions.add(getBestPosition(peasant, goldMine.getPosition().getAdjacentPositions()));
-                    }
-                } else {
-                    for (Forest forest : stateTracker.getForests()){
-                        positions.add(getBestPosition(peasant, forest.getPosition().getAdjacentPositions()));
-                    }
+        List<Position> viablePositions = new ArrayList<>();
+
+        List<Position> positions = new ArrayList<>();
+        if (peasant.getCargoAmount() == 0) {
+            if (stateTracker.goldNeeded()) {
+                for (GoldMine goldMine : stateTracker.getGoldMines()) {
+                    positions.add(getBestPosition(peasant, goldMine.getPosition().getAdjacentPositions()));
                 }
             } else {
-                positions.add(getBestPosition(peasant,
-                        stateTracker.getTownhall().getPosition().getAdjacentPositions()));
+                for (Forest forest : stateTracker.getForests()) {
+                    positions.add(getBestPosition(peasant, forest.getPosition().getAdjacentPositions()));
+                }
             }
-            viablePositions.add(getBestPosition(peasant, positions));
+        } else {
+            positions.add(getBestPosition(peasant,
+                    stateTracker.getTownhall().getPosition().getAdjacentPositions()));
         }
 
-        System.out.println(viablePositions);
-        return viablePositions;
+        //viablePositions.addAll(positions);
+        viablePositions.add(getBestPosition(peasant, positions));
 
+        return viablePositions;
     }
 
     private Position getBestPosition(Peasant peasant, List<Position> positions) {

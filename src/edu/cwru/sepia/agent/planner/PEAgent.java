@@ -129,10 +129,11 @@ public class PEAgent extends Agent {
             int id = peasantIdMap.get(action.getUnit(i).getID());
             switch (action.getType()) {
                 case MOVE:
+
                     actionMap.put(id, Action.createCompoundMove(
                             id,
-                            action.targetPosition().x,
-                            action.targetPosition().y
+                            ((MoveK)action).targetPosition(i).x,
+                            ((MoveK)action).targetPosition(i).y
                     ));
                     break;
                 case HARVEST:

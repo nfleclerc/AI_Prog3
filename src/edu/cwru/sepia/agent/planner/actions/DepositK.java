@@ -57,7 +57,7 @@ public class DepositK extends StripsAction {
         StringBuilder sb = new StringBuilder();
         sb.append("Deposit:");
         for (Peasant peasant : peasantsToDeposit){
-            sb.append("\n\t(" + peasant.getID() + ", " + townhall.getID() + ")");
+            sb.append("\t(" + peasant.getID() + ", " + townhall.getID() + ")");
         }
         return sb.toString();
     }
