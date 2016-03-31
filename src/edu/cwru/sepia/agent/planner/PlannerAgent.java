@@ -106,6 +106,7 @@ public class PlannerAgent extends Agent {
 
             //the plan has been found, if at the goal node
             if (currentState.isGoal()){
+                System.out.println("Plan Found!");
                 return makePlan(currentState);
             }
 

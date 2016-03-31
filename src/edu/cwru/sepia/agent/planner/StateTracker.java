@@ -7,6 +7,7 @@ import edu.cwru.sepia.environment.model.state.State;
 import edu.cwru.sepia.environment.model.state.Unit;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -188,10 +189,19 @@ public class StateTracker {
         if (peasants.size() > parent.getStateTracker().getPeasants().size()){
             return 0;
         }
+        if (containsDuplicatePositions(peasants)){
+            return Double.POSITIVE_INFINITY;
+        }
         return heuristic;
     }
 
-    private Forest findClosestForest(Peasant peasant) {
+    private boolean containsDuplicatePositions(List<Peasant> peasants) {
+        List<Position> positions = peasants.stream().map(Peasant::getPosition).collect(Collectors.toList());
+        HashSet<Position> positionSet = new HashSet<>(positions);
+        return positions.size() != positionSet.size();
+    }
+
+    public Forest findClosestForest(Peasant peasant) {
         Forest closestForest = forests.get(0);
         for (Forest forest : forests) {
             if (forest.getPosition().chebyshevDistance(peasant.getPosition()) <
@@ -202,7 +212,7 @@ public class StateTracker {
         return closestForest;
     }
 
-    private GoldMine findClosestGoldMine(Peasant peasant) {
+    public GoldMine findClosestGoldMine(Peasant peasant) {
         GoldMine closestGoldMine = goldMines.get(0);
         for (GoldMine goldMine : goldMines) {
             if (goldMine.getPosition().chebyshevDistance(peasant.getPosition()) <
