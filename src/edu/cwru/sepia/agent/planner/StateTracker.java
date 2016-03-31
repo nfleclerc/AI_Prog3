@@ -249,7 +249,7 @@ public class StateTracker {
     }
 
     public boolean goldNeeded() {
-        return currentGold <= currentWood;
+        return currentGold < currentWood;
     }
 
     public int getCurrentGold() {

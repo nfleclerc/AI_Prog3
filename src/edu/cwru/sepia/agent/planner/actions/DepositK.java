@@ -43,7 +43,7 @@ public class DepositK extends StripsAction {
     }
 
     @Override
-    public Position targetPosition(int index) {
+    public Position targetPosition() {
         return townhall.getPosition();
     }
 

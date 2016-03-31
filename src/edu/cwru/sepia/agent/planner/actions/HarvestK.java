@@ -39,7 +39,6 @@ public class HarvestK extends StripsAction {
                 Resource childResource = childState.getStateTracker().getResourceById(resource.getID());
                 childPeasant.carry(resource.getType(), 100);
                 childResource.harvestAmount(100);
-                System.out.println(childResource.getAmountRemaining());
                 if (resource.getAmountRemaining() <= 0) {
                     childState.removeResource(resource);
 
@@ -49,7 +48,7 @@ public class HarvestK extends StripsAction {
     }
 
     @Override
-    public Position targetPosition(int index) {
+    public Position targetPosition() {
         return resource.getPosition();
     }
 

@@ -37,17 +37,13 @@ public class BuildPeasant extends StripsAction {
     }
 
     @Override
-    public Position targetPosition(int index) {
+    public Position targetPosition() {
         return townhall.getPosition();
     }
 
     @Override
     public String toString(){
         return "BuildPeasant(" + townhall.getID() + ")";
-    }
-
-    public Integer newPeasantId(){
-        return gameState.getStateTracker().getPeasants().size();
     }
 
 }

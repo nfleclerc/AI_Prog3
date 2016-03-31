@@ -101,10 +101,6 @@ public class PlannerAgent extends Agent {
         //add nodes to the open list until the goal has been found
         while (!open.isEmpty()){
 
-            System.out.println("BEGIN LOOP");
-            System.out.println("Open list:\n\t" + open.toString());
-            System.out.println("Closed list:\n\t" + closed.toString());
-
             //heuristically determine which node to expand next
             currentState = open.poll();
 
@@ -122,10 +118,7 @@ public class PlannerAgent extends Agent {
 
             closed.add(currentState);
 
-            System.out.println("END LOOP");
-            System.out.println("Open list:\n\t" + open);
-            System.out.println("Closed list:\n\t" + closed);
-            System.out.println("\n-------------------------");
+
 
         }
 

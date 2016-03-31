@@ -131,22 +131,22 @@ public class PEAgent extends Agent {
                 case MOVE:
                     actionMap.put(id, Action.createCompoundMove(
                             id,
-                            action.targetPosition(i).x,
-                            action.targetPosition(i).y
+                            action.targetPosition().x,
+                            action.targetPosition().y
                     ));
                     break;
                 case HARVEST:
                     actionMap.put(id, Action.createPrimitiveGather(
                             id,
                             action.getUnit(i).getPosition().getDirection(
-                                    action.targetPosition(i))
+                                    action.targetPosition())
                     ));
                     break;
                 case DEPOSIT:
                     actionMap.put(id, Action.createPrimitiveDeposit(
                             id,
                             action.getUnit(i).getPosition().getDirection(
-                                    action.targetPosition(i))
+                                    action.targetPosition())
                     ));
                     break;
                 case BUILD:

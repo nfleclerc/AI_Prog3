@@ -58,7 +58,7 @@ public abstract class StripsAction {
         return units.get(index);
     }
 
-    public abstract Position targetPosition(int index);
+    public abstract Position targetPosition();
 
     public double getCost(){
         return 0;

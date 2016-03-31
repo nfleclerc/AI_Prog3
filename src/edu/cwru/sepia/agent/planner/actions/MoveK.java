@@ -6,27 +6,23 @@ import edu.cwru.sepia.agent.planner.Position;
 import edu.cwru.sepia.agent.planner.StateTracker;
 import edu.cwru.sepia.agent.planner.entities.Peasant;
 import edu.cwru.sepia.agent.planner.entities.Resource;
+import javafx.geometry.Pos;
 
 public class MoveK extends StripsAction {
-    List<Position> positions;
+    Position position;
     List<Peasant> peasants;
 
-    public MoveK(List<Peasant> units, List<Position> positions){
+    public MoveK(List<Peasant> units, Position position){
         super(units);
         this.peasants = units;
-        this.positions = positions;
+        this.position = position;
         this.type = SepiaActionType.MOVE;
     }
 
     @Override
     public boolean preconditionsMet(GameState state) {
-        for (Position position : positions) {
-            if (position.inBounds(state.getStateTracker().getXExtent(),
-                                state.getStateTracker().getYExtent())){
-                return true;
-            }
-        }
-        return false;
+        return position.inBounds(state.getStateTracker().getXExtent(),
+                state.getStateTracker().getYExtent());
     }
 
     @Override
@@ -34,8 +30,7 @@ public class MoveK extends StripsAction {
         GameState childState = new GameState(state, this);
         for(Peasant peasant : peasants) {
             Peasant childPeasant = childState.getStateTracker().getPeasantById(peasant.getID());
-            childPeasant.setPosition(new Position(positions.get(peasants.indexOf(peasant))));
-            //this is assuming the peasants and positions are added to their respective lists in the same order
+            childPeasant.setPosition(new Position(position));
         }
         return childState;
     }
@@ -44,15 +39,15 @@ public class MoveK extends StripsAction {
     @Override
     public double getCost(){
         double cost = 0.0;
-        for(Position position : positions){
-            cost += (position.chebyshevDistance(position));
+        for(Peasant peasant : peasants){
+            cost += (peasant.getPosition().chebyshevDistance(position));
         }
         return cost;
     }
 
     @Override
-    public Position targetPosition(int index) {
-        return positions.get(index);
+    public Position targetPosition() {
+        return position;
     }
 
     @Override
@@ -60,7 +55,7 @@ public class MoveK extends StripsAction {
         StringBuilder sb = new StringBuilder();
         sb.append("Move:");
         for (Peasant peasant : peasants){
-            sb.append("\n\t(" + peasant.getID() + ", " + positions.get(peasants.indexOf(peasant)).toString() + ")");
+            sb.append("\n\t(" + peasant.getID() + ", " + position + ")");
         }
         return sb.toString();
     }
