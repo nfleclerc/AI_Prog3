@@ -13,7 +13,7 @@ public class MoveK extends StripsAction {
 
     public MoveK(List<Peasant> units, List<Position> positions){
         super(units);
-        this.peasants = units
+        this.peasants = units;
         this.positions = positions;
         this.type = SepiaActionType.MOVE;
     }
@@ -40,8 +40,28 @@ public class MoveK extends StripsAction {
         return childState;
     }
 
+    //gets overall cost
+    @Override
+    public double getCost(){
+        double cost = 0.0;
+        for(Position position : positions){
+            cost += (position.chebyshevDistance(position) * 10);
+        }
+        return cost;
+    }
+
     @Override
     public Position targetPosition(int index) {
         return positions.get(index);
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("Move:\n");
+        for (Peasant peasant : peasants){
+            sb.append("\t(" + peasant + ", " + positions.get(peasants.indexOf(peasant)) + ")\n");
+        }
+        return sb.toString();
     }
 }
