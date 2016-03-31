@@ -105,14 +105,14 @@ public class PEAgent extends Agent {
             actionMap.put(peasantIdMap.get(nextAction.getUnit().getID()), createSepiaAction(nextAction));
             previousStripsActions.push(nextAction);
         }
+        System.out.println(plan.peek());
         return actionMap;
     }
 
     private void populateUnitMap(State.StateView stateView){
         int i = 0;
         for (Unit.UnitView unitView : stateView.getAllUnits()){
-            peasantIdMap.putIfAbsent(unitView.getID(), i++);
-            System.out.println(peasantIdMap);
+            peasantIdMap.putIfAbsent(i++, unitView.getID());
         }
     }
 
