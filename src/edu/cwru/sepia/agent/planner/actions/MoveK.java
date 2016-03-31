@@ -34,7 +34,9 @@ public class MoveK extends StripsAction {
         GameState childState = new GameState(state, this);
         for(Peasant peasant : peasants) {
             Peasant childPeasant = childState.getStateTracker().getPeasantById(peasant.getID());
-            childPeasant.setPosition(positions.get(peasants.indexOf(peasant)));
+            System.out.println("old pos: " + childPeasant.getPosition() + " new pos: " +
+            positions.get(peasants.indexOf(peasant)));
+            childPeasant.setPosition(new Position(positions.get(peasants.indexOf(peasant))));
             //this is assuming the peasants and positions are added to their respective lists in the same order
         }
         return childState;
@@ -45,7 +47,7 @@ public class MoveK extends StripsAction {
     public double getCost(){
         double cost = 0.0;
         for(Position position : positions){
-            cost += (position.chebyshevDistance(position) * 10);
+            cost += (position.chebyshevDistance(position));
         }
         return cost;
     }

@@ -1,9 +1,7 @@
 package edu.cwru.sepia.agent.planner;
 
 import edu.cwru.sepia.agent.planner.actions.*;
-import edu.cwru.sepia.agent.planner.entities.Peasant;
-import edu.cwru.sepia.agent.planner.entities.Resource;
-import edu.cwru.sepia.agent.planner.entities.Townhall;
+import edu.cwru.sepia.agent.planner.entities.*;
 import edu.cwru.sepia.environment.model.state.State;
 
 import java.util.ArrayList;
@@ -95,59 +93,57 @@ public class GameState implements Comparable<GameState> {
 
     private void generateSomeStuff(List<GameState> children) {
 
-        MoveK move = new MoveK(stateTracker.getPeasants(),
-                generateViablePositions(stateTracker.getPeasants()));
+
+        MoveK move = new MoveK(stateTracker.getPeasants(), generateViablePositions(stateTracker.getPeasants()));
         if (move.preconditionsMet(this)) {
             children.add(move.apply(this));
         }
+        System.out.println(move);
         //add all possible states resulting from deposits
         DepositK deposit = new DepositK(stateTracker.getPeasants(), stateTracker.getTownhall());
         if (deposit.preconditionsMet(this)) {
             children.add(deposit.apply(this));
         }
+        System.out.println(deposit);
         //add all possible states resulting from harvests
-        for (Resource resource : stateTracker.getAllResources()) {
-            HarvestK harvest = new HarvestK(stateTracker.getPeasants(), stateTracker.getAllResources());
-            if (harvest.preconditionsMet(this)) {
-                children.add(harvest.apply(this));
-            }
+        HarvestK harvest = new HarvestK(stateTracker.getPeasants(), stateTracker.getAllResources());
+        if (harvest.preconditionsMet(this)) {
+            children.add(harvest.apply(this));
         }
+        System.out.println(harvest);
     }
-
-
-
 
     private List<Position> generateViablePositions(List<Peasant> peasants) {
 
         List<Position> viablePositions = new ArrayList<>();
 
         for (Peasant peasant : peasants) {
+            List<Position> positions = new ArrayList<>();
             if (peasant.getCargoAmount() == 0) {
                 if (stateTracker.goldNeeded()) {
-                    viablePositions.addAll(stateTracker.getGoldMines().stream()
-                            .filter(resource -> resource.getAmountRemaining() > 0)
-                            .map(resource -> getBestPosition(peasant,
-                            resource.getPosition().getAdjacentPositions()))
-                            .collect(Collectors.toList()));
+                    for (GoldMine goldMine : stateTracker.getGoldMines()){
+                        positions.add(getBestPosition(peasant, goldMine.getPosition().getAdjacentPositions()));
+                    }
                 } else {
-                    viablePositions.addAll(stateTracker.getForests().stream()
-                            .filter(resource -> resource.getAmountRemaining() > 0)
-                            .map(resource -> getBestPosition(peasant,
-                            resource.getPosition().getAdjacentPositions()))
-                            .collect(Collectors.toList()));
+                    for (Forest forest : stateTracker.getForests()){
+                        positions.add(getBestPosition(peasant, forest.getPosition().getAdjacentPositions()));
+                    }
                 }
             } else {
-                viablePositions.add(getBestPosition(peasant,
+                positions.add(getBestPosition(peasant,
                         stateTracker.getTownhall().getPosition().getAdjacentPositions()));
             }
+            viablePositions.add(getBestPosition(peasant, positions));
         }
+        System.out.println(viablePositions);
         return viablePositions;
     }
 
-    private Position getBestPosition(Peasant peasant, List<Position> adjacentPositions) {
+    private Position getBestPosition(Peasant peasant, List<Position> positions) {
         Position currentPosition = peasant.getPosition();
-        Position bestPosition = adjacentPositions.get(0);
-        for (Position position : adjacentPositions) {
+        Position bestPosition = positions.get(0);
+        for (Position position :
+                positions) {
             bestPosition = position.chebyshevDistance(currentPosition) <
                     bestPosition.chebyshevDistance(currentPosition) ? position : bestPosition;
         }
@@ -231,4 +227,5 @@ public class GameState implements Comparable<GameState> {
     public void removeResource(Resource resource) {
         stateTracker.removeResource(resource);
     }
+
 }
