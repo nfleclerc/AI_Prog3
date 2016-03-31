@@ -5,7 +5,6 @@ import edu.cwru.sepia.agent.planner.entities.*;
 import edu.cwru.sepia.environment.model.state.State;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * This class is used to represent the state of the game after applying one of the avaiable actions. It will also
@@ -122,7 +121,7 @@ public class GameState implements Comparable<GameState> {
         Set<Position> viablePositions = new HashSet<>();
 
         for (Peasant peasant : stateTracker.getPeasants()) {
-            Set<Position> positions = new HashSet<>();
+            List<Position> positions = new ArrayList<>();
             if (peasant.getCargoAmount() == 0) {
                 if (stateTracker.goldNeeded()) {
                     for (GoldMine goldMine : stateTracker.getGoldMines()){
@@ -137,7 +136,7 @@ public class GameState implements Comparable<GameState> {
                 positions.add(getBestPosition(peasant,
                         stateTracker.getTownhall().getPosition().getAdjacentPositions()));
             }
-            viablePositions.addAll(positions);
+            viablePositions.add(getBestPosition(peasant, positions));
         }
 
         System.out.println(viablePositions);
