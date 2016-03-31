@@ -58,9 +58,9 @@ public class MoveK extends StripsAction {
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        sb.append("Move:\n");
+        sb.append("Move:");
         for (Peasant peasant : peasants){
-            sb.append("\t(" + peasant + ", " + positions.get(peasants.indexOf(peasant)) + ")\n");
+            sb.append("\n\t(" + peasant.getID() + ", " + positions.get(peasants.indexOf(peasant)).toString() + ")");
         }
         return sb.toString();
     }
