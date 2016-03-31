@@ -22,10 +22,12 @@ public class HarvestK extends StripsAction {
     @Override
     public boolean preconditionsMet(GameState state) {
         for (Peasant peasant : peasants){
-            if(!(peasant.getCargoAmount() == 0 &&
-                    resources.get(peasants.indexOf(peasant)).getAmountRemaining() > 0 &&
-                    peasant.getPosition().isAdjacent(resources.get(peasants.indexOf(peasant)).getPosition()))){
-                return false;
+            for (Resource resource : resources){
+                if  (peasant.getCargoAmount() == 0 &&
+                        resource.getAmountRemaining() > 0 &&
+                        peasant.getPosition().isAdjacent(resource.getPosition())){
+                    return false;
+                }
             }
         }
         return true;

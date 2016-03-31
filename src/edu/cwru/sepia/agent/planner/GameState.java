@@ -93,24 +93,20 @@ public class GameState implements Comparable<GameState> {
 
     private void generateSomeStuff(List<GameState> children) {
 
-
         MoveK move = new MoveK(stateTracker.getPeasants(), generateViablePositions(stateTracker.getPeasants()));
         if (move.preconditionsMet(this)) {
             children.add(move.apply(this));
         }
-        System.out.println(move);
         //add all possible states resulting from deposits
         DepositK deposit = new DepositK(stateTracker.getPeasants(), stateTracker.getTownhall());
         if (deposit.preconditionsMet(this)) {
             children.add(deposit.apply(this));
         }
-        System.out.println(deposit);
         //add all possible states resulting from harvests
         HarvestK harvest = new HarvestK(stateTracker.getPeasants(), stateTracker.getAllResources());
         if (harvest.preconditionsMet(this)) {
             children.add(harvest.apply(this));
         }
-        System.out.println(harvest);
     }
 
     private List<Position> generateViablePositions(List<Peasant> peasants) {
@@ -133,9 +129,9 @@ public class GameState implements Comparable<GameState> {
                 positions.add(getBestPosition(peasant,
                         stateTracker.getTownhall().getPosition().getAdjacentPositions()));
             }
+            System.out.println(positions);
             viablePositions.add(getBestPosition(peasant, positions));
         }
-        System.out.println(viablePositions);
         return viablePositions;
     }
 

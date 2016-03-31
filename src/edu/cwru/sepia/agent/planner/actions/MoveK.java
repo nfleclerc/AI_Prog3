@@ -34,8 +34,6 @@ public class MoveK extends StripsAction {
         GameState childState = new GameState(state, this);
         for(Peasant peasant : peasants) {
             Peasant childPeasant = childState.getStateTracker().getPeasantById(peasant.getID());
-            System.out.println("old pos: " + childPeasant.getPosition() + " new pos: " +
-            positions.get(peasants.indexOf(peasant)));
             childPeasant.setPosition(new Position(positions.get(peasants.indexOf(peasant))));
             //this is assuming the peasants and positions are added to their respective lists in the same order
         }
