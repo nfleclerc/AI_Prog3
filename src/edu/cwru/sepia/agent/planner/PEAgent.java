@@ -8,6 +8,7 @@ import edu.cwru.sepia.environment.model.state.ResourceType;
 import edu.cwru.sepia.environment.model.state.State;
 import edu.cwru.sepia.environment.model.state.Template;
 import edu.cwru.sepia.environment.model.state.Unit;
+import edu.cwru.sepia.util.Direction;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -98,12 +99,18 @@ public class PEAgent extends Agent {
         if (stateView.getTurnNumber() != 0) {
             for (ActionResult result :
                     historyView.getCommandFeedback(playernum, stateView.getTurnNumber() - 1).values()) {
-                if (result.getFeedback() != ActionFeedback.COMPLETED) {
+                System.out.println(result);
+                if (result.getFeedback() == ActionFeedback.INCOMPLETE) {
                     actionMap.put(result.getAction().getUnitId(), result.getAction());
-                } else if (result.getFeedback() == ActionFeedback.COMPLETED) {
-                    StripsAction nextAction = plan.pop();
-                    actionMap.putAll(createSepiaAction(nextAction));
+                } else if (result.getFeedback() == ActionFeedback.FAILED){
+                    actionMap.put(result.getAction().getUnitId(), Action.createPrimitiveMove(
+                            result.getAction().getUnitId(), Direction.NORTH
+                    ));
                 }
+            }
+            if (actionMap.isEmpty()){
+                StripsAction nextAction = plan.pop();
+                actionMap.putAll(createSepiaAction(nextAction));
             }
         } else {
             actionMap.putAll(createSepiaAction(plan.pop()));
