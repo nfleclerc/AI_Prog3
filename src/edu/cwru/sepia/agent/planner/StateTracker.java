@@ -186,11 +186,11 @@ public class StateTracker {
                 }
             }
         }
-        if (peasants.size() > parent.getStateTracker().getPeasants().size()){
-            return 0;
-        }
         if (containsDuplicatePositions(peasants)){
             return Double.POSITIVE_INFINITY;
+        }
+        if (peasants.size() > parent.getStateTracker().getPeasants().size()){
+            return 0;
         }
         return heuristic;
     }

@@ -20,6 +20,7 @@ public class Position {
 
     public final int x;
     public final int y;
+    private boolean blocked;
 
     public Position(int x, int y) {
         this.x = x;
@@ -193,5 +194,13 @@ public class Position {
     @Override
     public String toString() {
         return "(" + x + ", " + y + ")";
+    }
+
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
     }
 }

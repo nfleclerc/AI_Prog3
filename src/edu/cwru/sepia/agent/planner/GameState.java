@@ -139,12 +139,12 @@ public class GameState implements Comparable<GameState> {
                 }
             }
         } else {
-            positions.add(getBestPosition(peasant,
-                    stateTracker.getTownhall().getPosition().getAdjacentPositions()));
+            positions.add(getBestPosition(peasant, stateTracker.getTownhall().getPosition().getAdjacentPositions()));
+
         }
 
-        //viablePositions.addAll(positions);
         viablePositions.add(getBestPosition(peasant, positions));
+        //viablePositions.addAll(positions);
 
         return viablePositions;
     }
@@ -153,13 +153,14 @@ public class GameState implements Comparable<GameState> {
         Position currentPosition = peasant.getPosition();
         Position bestPosition = positions.get(0);
         for (Position position : positions) {
-            bestPosition = position.chebyshevDistance(currentPosition) <
-                    bestPosition.chebyshevDistance(currentPosition) ? position : bestPosition;
+            if (position.chebyshevDistance(currentPosition) < bestPosition.chebyshevDistance(currentPosition)) {
+                bestPosition = position;
+            }
         }
         return bestPosition;
     }
 
-    /**
+    /*
      * Write your heuristic function here. Remember this must be admissible for the properties of A* to hold. If you
      * can come up with an easy way of computing a consistent heuristic that is even better, but not strictly necessary.
      *

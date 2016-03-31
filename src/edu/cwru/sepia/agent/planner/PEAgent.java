@@ -100,12 +100,8 @@ public class PEAgent extends Agent {
             for (ActionResult result :
                     historyView.getCommandFeedback(playernum, stateView.getTurnNumber() - 1).values()) {
                 System.out.println(result);
-                if (result.getFeedback() == ActionFeedback.INCOMPLETE) {
+                if (result.getFeedback() != ActionFeedback.COMPLETED) {
                     actionMap.put(result.getAction().getUnitId(), result.getAction());
-                } else if (result.getFeedback() == ActionFeedback.FAILED){
-                    actionMap.put(result.getAction().getUnitId(), Action.createPrimitiveMove(
-                            result.getAction().getUnitId(), Direction.NORTH
-                    ));
                 }
             }
             if (actionMap.isEmpty()){
