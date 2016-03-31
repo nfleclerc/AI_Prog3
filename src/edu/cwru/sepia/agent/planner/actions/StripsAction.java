@@ -54,8 +54,8 @@ public abstract class StripsAction {
         return type;
     }
 
-    public StripsUnit getUnit() {
-        return unit;
+    public StripsUnit getUnit(int index) {
+        return units.get(index);
     }
 
     public abstract Position targetPosition(int index);
