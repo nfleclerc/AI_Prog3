@@ -12,7 +12,7 @@ public class HarvestK extends StripsAction {
     private List<Peasant> peasants;
 
 
-    public HarvestK(List<Peasant> units, List<Position> positions){
+    public HarvestK(List<Peasant> units, List<Resource> resources){
         super(units);
         this.peasants = units;
         this.resources = resources;
