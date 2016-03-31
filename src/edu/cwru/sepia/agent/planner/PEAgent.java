@@ -1,8 +1,6 @@
 package edu.cwru.sepia.agent.planner;
 
-import edu.cwru.sepia.action.Action;
-import edu.cwru.sepia.action.ActionType;
-import edu.cwru.sepia.action.LocatedAction;
+import edu.cwru.sepia.action.*;
 import edu.cwru.sepia.agent.Agent;
 import edu.cwru.sepia.agent.planner.actions.*;
 import edu.cwru.sepia.environment.model.history.History;
@@ -43,19 +41,19 @@ public class PEAgent extends Agent {
     @Override
     public Map<Integer, Action> initialStep(State.StateView stateView, History.HistoryView historyView) {
         // gets the townhall ID and the peasant ID
-        for(int unitId : stateView.getUnitIds(playernum)) {
+        for (int unitId : stateView.getUnitIds(playernum)) {
             Unit.UnitView unit = stateView.getUnit(unitId);
             String unitType = unit.getTemplateView().getName().toLowerCase();
-            if(unitType.equals("townhall")) {
+            if (unitType.equals("townhall")) {
                 townhallId = unitId;
-            } else if(unitType.equals("peasant")) {
+            } else if (unitType.equals("peasant")) {
                 peasantIdMap.put(unitId, unitId);
             }
         }
 
         // Gets the peasant template ID. This is used when building a new peasant with the townhall
-        for(Template.TemplateView templateView : stateView.getTemplates(playernum)) {
-            if(templateView.getName().toLowerCase().equals("peasant")) {
+        for (Template.TemplateView templateView : stateView.getTemplates(playernum)) {
+            if (templateView.getName().toLowerCase().equals("peasant")) {
                 peasantTemplateId = templateView.getID();
                 break;
             }
@@ -68,66 +66,59 @@ public class PEAgent extends Agent {
      * This is where you will read the provided plan and execute it. If your plan is correct then when the plan is empty
      * the scenario should end with a victory. If the scenario keeps running after you run out of actions to execute
      * then either your plan is incorrect or your execution of the plan has a bug.
-     *
+     * <p>
      * You can create a SEPIA deposit action with the following method
      * Action.createPrimitiveDeposit(int peasantId, Direction townhallDirection)
-     *
+     * <p>
      * You can create a SEPIA harvest action with the following method
      * Action.createPrimitiveGather(int peasantId, Direction resourceDirection)
-     *
+     * <p>
      * You can create a SEPIA build action with the following method
      * Action.createPrimitiveProduction(int townhallId, int peasantTemplateId)
-     *
+     * <p>
      * You can create a SEPIA move action with the following method
      * Action.createCompoundMove(int peasantId, int x, int y)
-     *
+     * <p>
      * these actions are stored in a mapping between the peasant unit ID executing the action and the action you created.
-     *
+     * <p>
      * For the compound actions you will need to check their progress and wait until they are complete before issuing
      * another action for that unit. If you issue an action before the compound action is complete then the peasant
      * will stop what it was doing and begin executing the new action.
-     *
+     * <p>
      * To check an action's progress you can call getCurrentDurativeAction on each UnitView. If the Action is null nothing
      * is being executed. If the action is not null then you should also call getCurrentDurativeProgress. If the value is less than
      * 1 then the action is still in progress.
-     *
+     * <p>
      * Also remember to check your plan's preconditions before executing!
      */
     @Override
     public Map<Integer, Action> middleStep(State.StateView stateView, History.HistoryView historyView) {
         Map<Integer, Action> actionMap = new HashMap<>();
         populateUnitMap(stateView);
-        Unit.UnitView unit = stateView.getUnit(peasantIdMap.get(plan.peek().getUnit().getID()));
-        if (waitForPreviousAction(unit)){
-            actionMap.put(unit.getID(), createSepiaAction(previousStripsActions.peek()));
+        if (stateView.getTurnNumber() != 0) {
+            for (ActionResult result :
+                    historyView.getCommandFeedback(playernum, stateView.getTurnNumber() - 1).values()) {
+                System.out.println(result);
+                if (result.getFeedback() != ActionFeedback.COMPLETED) {
+                    actionMap.put(result.getAction().getUnitId(), result.getAction());
+                } else if (result.getFeedback() == ActionFeedback.COMPLETED) {
+                    StripsAction nextAction = plan.pop();
+                    actionMap.put(peasantIdMap.get(nextAction.getUnit().getID()), createSepiaAction(nextAction));
+                } else {
+                    actionMap.put(result.getAction().getUnitId(), result.getAction());
+                }
+            }
         } else {
-            StripsAction nextAction = plan.pop();
-            actionMap.put(peasantIdMap.get(nextAction.getUnit().getID()), createSepiaAction(nextAction));
-            previousStripsActions.push(nextAction);
+            actionMap.put(1, createSepiaAction(plan.pop()));
         }
-        System.out.println(plan.peek());
         return actionMap;
     }
 
-    private void populateUnitMap(State.StateView stateView){
+    private void populateUnitMap(State.StateView stateView) {
         int i = 0;
-        for (Unit.UnitView unitView : stateView.getAllUnits()){
+        for (Unit.UnitView unitView : stateView.getAllUnits()) {
             peasantIdMap.putIfAbsent(i++, unitView.getID());
         }
-    }
-
-    private boolean waitForPreviousAction(Unit.UnitView unitView) {
-        if (!previousStripsActions.isEmpty()) {
-                if (previousStripsActions.peek().getType() == SepiaActionType.MOVE) {
-                    Move prevStripsAction = (Move) previousStripsActions.peek();
-                    if (unitView.getID() == prevStripsAction.getUnit().getID() &&
-                            unitView.getXPosition() != prevStripsAction.targetPosition().x &&
-                            unitView.getYPosition() != prevStripsAction.targetPosition().y) {
-                        return true;
-                    }
-                }
-            }
-        return false;
     }
 
     /**
@@ -139,19 +130,19 @@ public class PEAgent extends Agent {
         switch (action.getType()){
             case MOVE:
                 return Action.createCompoundMove(
-                        action.getUnit().getID(),
+                        peasantIdMap.get(action.getUnit().getID()),
                         action.targetPosition().x,
                         action.targetPosition().y
                 );
             case HARVEST:
                 return Action.createPrimitiveGather(
-                        action.getUnit().getID(),
+                        peasantIdMap.get(action.getUnit().getID()),
                         action.getUnit().getPosition().getDirection(
                                 action.targetPosition())
                 );
             case DEPOSIT:
                 return Action.createPrimitiveDeposit(
-                        action.getUnit().getID(),
+                        peasantIdMap.get(action.getUnit().getID()),
                         action.getUnit().getPosition().getDirection(
                                 action.targetPosition())
                 );
