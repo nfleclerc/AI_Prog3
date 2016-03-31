@@ -104,8 +104,6 @@ public class PEAgent extends Agent {
                 } else if (result.getFeedback() == ActionFeedback.COMPLETED) {
                     StripsAction nextAction = plan.pop();
                     actionMap.put(peasantIdMap.get(nextAction.getUnit().getID()), createSepiaAction(nextAction));
-                } else {
-                    actionMap.put(result.getAction().getUnitId(), result.getAction());
                 }
             }
         } else {

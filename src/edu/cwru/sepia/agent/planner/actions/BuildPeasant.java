@@ -23,7 +23,7 @@ public class BuildPeasant extends StripsAction {
 
     @Override
     public boolean preconditionsMet(GameState state) {
-        return state.getStateTracker().getCurrentGold() >= 400 && state.getStateTracker().getCurrentFood() <= 3;
+        return state.getStateTracker().getCurrentGold() >= 400 && state.getStateTracker().getCurrentFood() < 3;
     }
 
     @Override
