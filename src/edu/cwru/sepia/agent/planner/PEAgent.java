@@ -103,11 +103,11 @@ public class PEAgent extends Agent {
                     actionMap.put(result.getAction().getUnitId(), result.getAction());
                 } else if (result.getFeedback() == ActionFeedback.COMPLETED) {
                     StripsAction nextAction = plan.pop();
-                    actionMap.put(peasantIdMap.get(nextAction.getUnit().getID()), createSepiaAction(nextAction));
+                    actionMap.putAll(createSepiaAction(nextAction));
                 }
             }
         } else {
-            actionMap.put(1, createSepiaAction(plan.pop()));
+            actionMap.putAll(createSepiaAction(plan.pop()));
         }
         return actionMap;
     }
@@ -124,31 +124,35 @@ public class PEAgent extends Agent {
      * @param action StripsAction
      * @return SEPIA representation of same action
      */
-    private Action createSepiaAction(StripsAction action) {
-        switch (action.getType()){
-            case MOVE:
-                return Action.createCompoundMove(
-                        peasantIdMap.get(action.getUnit().getID()),
-                        action.targetPosition().x,
-                        action.targetPosition().y
-                );
-            case HARVEST:
-                return Action.createPrimitiveGather(
-                        peasantIdMap.get(action.getUnit().getID()),
-                        action.getUnit().getPosition().getDirection(
-                                action.targetPosition())
-                );
-            case DEPOSIT:
-                return Action.createPrimitiveDeposit(
-                        peasantIdMap.get(action.getUnit().getID()),
-                        action.getUnit().getPosition().getDirection(
-                                action.targetPosition())
-                );
-            case BUILD:
-                return Action.createPrimitiveBuild(townhallId, peasantTemplateId);
-            default:
-                return null;
+    private Map<Integer, Action> createSepiaAction(StripsAction action) {
+        Map<Integer, Action> actionMap = new HashMap<>();
+        for (int i = 0; i < peasantIdMap.size(); i++) {
+            int id = peasantIdMap.get(action.getUnit(i).getID());
+            switch (action.getType()) {
+                case MOVE:
+                    actionMap.put(id, Action.createCompoundMove(
+                            id,
+                            action.targetPosition(i).x,
+                            action.targetPosition(i).y
+                    ));
+                case HARVEST:
+                    actionMap.put(id, Action.createPrimitiveGather(
+                            id,
+                            action.getUnit(i).getPosition().getDirection(
+                                    action.targetPosition(i))
+                    ));
+                case DEPOSIT:
+                    actionMap.put(id, Action.createPrimitiveDeposit(
+                            id,
+                            action.getUnit(i).getPosition().getDirection(
+                                    action.targetPosition(i))
+                    ));
+                case BUILD:
+                    actionMap.put(townhallId, Action.createPrimitiveBuild(townhallId, peasantTemplateId));
+                default:
+            }
         }
+        return actionMap;
     }
 
     @Override

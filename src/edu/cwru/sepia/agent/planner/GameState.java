@@ -8,6 +8,7 @@ import edu.cwru.sepia.environment.model.state.State;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This class is used to represent the state of the game after applying one of the avaiable actions. It will also
@@ -78,7 +79,9 @@ public class GameState implements Comparable<GameState> {
         List<GameState> children = new ArrayList<>();
 
         if (stateTracker.mustBuildPeasants()) {
-            BuildPeasant buildPeasant = new BuildPeasant(stateTracker.getTownhall());
+            List<Townhall> townhall = new ArrayList<>();
+            townhall.add(stateTracker.getTownhall());
+            BuildPeasant buildPeasant = new BuildPeasant(townhall);
             if (buildPeasant.preconditionsMet(this)) {
                 children.add(buildPeasant.apply(this));
             } else {
@@ -90,79 +93,65 @@ public class GameState implements Comparable<GameState> {
         return children;
     }
 
-    private void generateSomeStuff(List<GameState> children){
-        //for each peasant in this state
-        for (Peasant peasant : stateTracker.getPeasants()) {
-            //generate List of positions that are hunkey-dorey
-            List<Position> viablePositions = generateViablePositions(peasant);
-            for (Position position : viablePositions) {
-                Move move = new Move(peasant, position);
-                if (move.preconditionsMet(this)) {
-                    children.add(move.apply(this));
-                }
-            }
-            //add all possible states resulting from deposits
-            Deposit deposit = new Deposit(peasant, stateTracker.getTownhall());
-            if (deposit.preconditionsMet(this)) {
-                children.add(deposit.apply(this));
-            }
-            //add all possible states resulting from harvests
-            for (Resource resource : stateTracker.getAllResources()) {
-                Harvest harvest = new Harvest(peasant, resource);
-                if (harvest.preconditionsMet(this)) {
-                    children.add(harvest.apply(this));
-                }
+    private void generateSomeStuff(List<GameState> children) {
+
+        MoveK move = new MoveK(stateTracker.getPeasants(),
+                generateViablePositions(stateTracker.getPeasants()));
+        if (move.preconditionsMet(this)) {
+            children.add(move.apply(this));
+        }
+        //add all possible states resulting from deposits
+        DepositK deposit = new DepositK(stateTracker.getPeasants(), stateTracker.getTownhall());
+        if (deposit.preconditionsMet(this)) {
+            children.add(deposit.apply(this));
+        }
+        //add all possible states resulting from harvests
+        for (Resource resource : stateTracker.getAllResources()) {
+            HarvestK harvest = new HarvestK(stateTracker.getPeasants(), stateTracker.getAllResources());
+            if (harvest.preconditionsMet(this)) {
+                children.add(harvest.apply(this));
             }
         }
     }
 
 
-    private List<Position> generateViablePositions(Peasant peasant) {
+
+
+    private List<Position> generateViablePositions(List<Peasant> peasants) {
+
         List<Position> viablePositions = new ArrayList<>();
-        Position currentPosition = peasant.getPosition();
 
-        if (peasant.getCargoAmount() == 0) {
-
-            if (stateTracker.goldNeeded()) {
-                for (Resource resource : stateTracker.getGoldMines()) {
-                    if (resource.getAmountRemaining() > 0) {
-                        List<Position> adjacentPositions = new ArrayList<>(resource.getPosition().getAdjacentPositions());
-                        Position bestPosition = adjacentPositions.get(0);
-                        for (Position position : adjacentPositions) {
-                            bestPosition = position.chebyshevDistance(currentPosition) <
-                                    bestPosition.chebyshevDistance(currentPosition) ? position : bestPosition;
-                        }
-                        viablePositions.add(bestPosition);
-                    }
+        for (Peasant peasant : peasants) {
+            if (peasant.getCargoAmount() == 0) {
+                if (stateTracker.goldNeeded()) {
+                    viablePositions.addAll(stateTracker.getGoldMines().stream()
+                            .filter(resource -> resource.getAmountRemaining() > 0)
+                            .map(resource -> getBestPosition(peasant,
+                            resource.getPosition().getAdjacentPositions()))
+                            .collect(Collectors.toList()));
+                } else {
+                    viablePositions.addAll(stateTracker.getForests().stream()
+                            .filter(resource -> resource.getAmountRemaining() > 0)
+                            .map(resource -> getBestPosition(peasant,
+                            resource.getPosition().getAdjacentPositions()))
+                            .collect(Collectors.toList()));
                 }
             } else {
-                for (Resource resource : stateTracker.getForests()) {
-                    if (resource.getAmountRemaining() > 0) {
-                        List<Position> adjacentPositions = new ArrayList<>(resource.getPosition().getAdjacentPositions());
-                        Position bestPosition = adjacentPositions.get(0);
-                        for (Position position : adjacentPositions) {
-                            bestPosition = position.chebyshevDistance(currentPosition) <
-                                    bestPosition.chebyshevDistance(currentPosition) ? position : bestPosition;
-                        }
-                        viablePositions.add(bestPosition);
-                    }
-                }
+                viablePositions.add(getBestPosition(peasant,
+                        stateTracker.getTownhall().getPosition().getAdjacentPositions()));
             }
-
-        } else {
-
-            List<Position> adjacentPositionsToTownhall =
-                    new ArrayList<>(stateTracker.getTownhall().getPosition().getAdjacentPositions());
-            Position bestPosition = adjacentPositionsToTownhall.get(0);
-            for (Position position : adjacentPositionsToTownhall) {
-                bestPosition = position.chebyshevDistance(currentPosition) <
-                        bestPosition.chebyshevDistance(currentPosition) ? position : bestPosition;
-            }
-            viablePositions.add(bestPosition);
         }
-
-
         return viablePositions;
+    }
+
+    private Position getBestPosition(Peasant peasant, List<Position> adjacentPositions) {
+        Position currentPosition = peasant.getPosition();
+        Position bestPosition = adjacentPositions.get(0);
+        for (Position position : adjacentPositions) {
+            bestPosition = position.chebyshevDistance(currentPosition) <
+                    bestPosition.chebyshevDistance(currentPosition) ? position : bestPosition;
+        }
+        return bestPosition;
     }
 
     /**
