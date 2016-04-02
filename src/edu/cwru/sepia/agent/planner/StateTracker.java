@@ -159,11 +159,13 @@ public class StateTracker {
             if (currentGold <= currentWood) {
                 //if no gold is had, go to nearest nonempty goldmine
                 if (peasant.getCargoAmount() == 0) {
-                    //find nearest nonempty goldmine
-                    GoldMine goldMine = findClosestGoldMine(peasant);
-                    //find distance to it
-                    //add the distance to this heuristic
-                    heuristic += goldMine.getPosition().chebyshevDistance(peasant.getPosition()) * 2;
+                    if (!forests.isEmpty()) {
+                        //find nearest nonempty goldmine
+                        GoldMine goldMine = findClosestGoldMine(peasant);
+                        //find distance to it
+                        //add the distance to this heuristic
+                        heuristic += goldMine.getPosition().chebyshevDistance(peasant.getPosition()) * 2;
+                    }
                 } else {
                     //if next to a goldmine harvest
                     //if gold is had, go to the townhall
@@ -174,10 +176,12 @@ public class StateTracker {
                 //if no wood is had, go to nearest nonempty forest
                 if (peasant.getCargoAmount() == 0) {
                     //find nearest nonempty forest
-                    Forest forest = findClosestForest(peasant);
-                    //find distance to it
-                    //add the distance to this heuristic
-                    heuristic += forest.getPosition().chebyshevDistance(peasant.getPosition()) * 2;
+                    if (!forests.isEmpty()) {
+                        Forest forest = findClosestForest(peasant);
+                        //find distance to it
+                        //add the distance to this heuristic
+                        heuristic += forest.getPosition().chebyshevDistance(peasant.getPosition()) * 2;
+                    }
                 } else {
                     //if next to a goldmine harvest
                     //if gold is had, go to the townhall

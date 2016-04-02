@@ -28,10 +28,9 @@ public class DepositK extends StripsAction {
             if((peasant.getCargoAmount() > 0 &&
                     peasant.getPosition().isAdjacent(townhall.getPosition()))){
                 peasantsToDeposit.add(peasant);
-                return true;
             }
         }
-        return false;
+        return !peasantsToDeposit.isEmpty();
     }
 
     @Override

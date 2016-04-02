@@ -153,6 +153,9 @@ public class GameState implements Comparable<GameState> {
 
     private Position getBestPosition(Peasant peasant, List<Position> positions, List<Position> closedPositions) {
         Position currentPosition = peasant.getPosition();
+        if (positions.isEmpty()){
+            return peasant.getPosition();
+        }
         Position bestPosition = positions.get(0);
         for (Position position : positions) {
             if (position.chebyshevDistance(currentPosition) < bestPosition.chebyshevDistance(currentPosition)
