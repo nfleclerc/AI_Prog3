@@ -116,16 +116,12 @@ public class GameState implements Comparable<GameState> {
     private Map<Peasant, Position> generatePositions() {
         Map<Peasant, Position> peasantPositionMap = new HashMap<>();
         for (Peasant peasant : stateTracker.getPeasants()){
-            for (Position position : generateViablePositions(peasant)){
-                peasantPositionMap.put(peasant, position);
-            }
+                peasantPositionMap.put(peasant, generateViablePosition(peasant));
         }
         return peasantPositionMap;
     }
 
-    private List<Position> generateViablePositions(Peasant peasant) {
-
-        List<Position> viablePositions = new ArrayList<>();
+    private Position generateViablePosition(Peasant peasant) {
 
         List<Position> positions = new ArrayList<>();
         if (peasant.getCargoAmount() == 0) {
@@ -143,10 +139,7 @@ public class GameState implements Comparable<GameState> {
 
         }
 
-        viablePositions.add(getBestPosition(peasant, positions));
-        //viablePositions.addAll(positions);
-
-        return viablePositions;
+        return (getBestPosition(peasant, positions));
     }
 
     private Position getBestPosition(Peasant peasant, List<Position> positions) {
