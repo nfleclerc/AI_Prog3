@@ -256,7 +256,7 @@ public class StateTracker {
     }
 
     public boolean goldNeeded() {
-        return currentGold < currentWood;
+        return currentGold < requiredGold;
     }
 
     public int getCurrentGold() {
@@ -278,5 +278,9 @@ public class StateTracker {
 
     public int getCurrentWood() {
         return currentWood;
+    }
+
+    public boolean woodNeeded() {
+        return currentWood < requiredWood;
     }
 }

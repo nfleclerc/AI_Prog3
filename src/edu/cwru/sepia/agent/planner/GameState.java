@@ -135,7 +135,7 @@ public class GameState implements Comparable<GameState> {
                             goldMine.getPosition().getAdjacentPositions(),
                             closedPositions));
                 }
-            } else {
+            } else if (stateTracker.woodNeeded()) {
                 for (Forest forest : stateTracker.getForests()) {
                     if (forest.getAmountRemaining() > 0)
                         positions.add(getBestPosition(peasant,
