@@ -60,6 +60,11 @@ public class HarvestK extends StripsAction {
     }
 
     @Override
+    public int getK() {
+        return peasantsAtResource.size();
+    }
+
+    @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
         sb.append("Harvest:");
@@ -68,4 +73,6 @@ public class HarvestK extends StripsAction {
         }
         return sb.toString();
     }
+
+
 }

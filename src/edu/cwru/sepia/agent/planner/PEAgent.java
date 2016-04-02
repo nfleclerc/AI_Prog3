@@ -128,7 +128,7 @@ public class PEAgent extends Agent {
      */
     private Map<Integer, Action> createSepiaAction(StripsAction action) {
         Map<Integer, Action> actionMap = new HashMap<>();
-        for (int i = 0; i < peasantIdMap.size() - 1; i++) {
+        for (int i = 0; i <  action.getK(); i++) {
             int id = peasantIdMap.get(action.getUnit(i).getID());
             switch (action.getType()) {
                 case MOVE:

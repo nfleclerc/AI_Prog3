@@ -42,6 +42,11 @@ public class BuildPeasant extends StripsAction {
     }
 
     @Override
+    public int getK() {
+        return 1;
+    }
+
+    @Override
     public String toString(){
         return "BuildPeasant(" + townhall.getID() + ")";
     }

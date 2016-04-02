@@ -84,7 +84,7 @@ public class StateTracker {
     }
 
     public boolean isGoal() {
-        return requiredWood == currentWood && requiredGold == currentGold;
+        return requiredWood <= currentWood && requiredGold <= currentGold;
     }
 
     @Override

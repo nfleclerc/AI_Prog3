@@ -52,6 +52,11 @@ public class DepositK extends StripsAction {
     }
 
     @Override
+    public int getK() {
+        return peasantsToDeposit.size();
+    }
+
+    @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
         sb.append("Deposit:");
