@@ -130,13 +130,15 @@ public class GameState implements Comparable<GameState> {
         if (peasant.getCargoAmount() == 0) {
             if (stateTracker.goldNeeded()) {
                 for (GoldMine goldMine : stateTracker.getGoldMines()) {
+                    if (goldMine.getAmountRemaining() > 0)
                     positions.add(getBestPosition(peasant,
                             goldMine.getPosition().getAdjacentPositions(),
                             closedPositions));
                 }
             } else {
                 for (Forest forest : stateTracker.getForests()) {
-                    positions.add(getBestPosition(peasant,
+                    if (forest.getAmountRemaining() > 0)
+                        positions.add(getBestPosition(peasant,
                             forest.getPosition().getAdjacentPositions(),
                             closedPositions));
                 }
@@ -148,14 +150,12 @@ public class GameState implements Comparable<GameState> {
 
         }
 
+        System.out.println(positions);
         return (getBestPosition(peasant, positions, closedPositions));
     }
 
     private Position getBestPosition(Peasant peasant, List<Position> positions, List<Position> closedPositions) {
         Position currentPosition = peasant.getPosition();
-        if (positions.isEmpty()){
-            return peasant.getPosition();
-        }
         Position bestPosition = positions.get(0);
         for (Position position : positions) {
             if (position.chebyshevDistance(currentPosition) < bestPosition.chebyshevDistance(currentPosition)
