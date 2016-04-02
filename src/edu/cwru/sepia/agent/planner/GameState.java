@@ -5,6 +5,7 @@ import edu.cwru.sepia.agent.planner.entities.*;
 import edu.cwru.sepia.environment.model.state.State;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This class is used to represent the state of the game after applying one of the avaiable actions. It will also
@@ -135,29 +136,21 @@ public class GameState implements Comparable<GameState> {
     private Position generateViablePosition(Peasant peasant, List<Position> closedPositions) {
         List<Position> positions = new ArrayList<>();
         if (peasant.getCargoAmount() == 0) {
-            /*
-            for (GoldMine goldMine : stateTracker.getGoldMines()) {
-                    if (goldMine.getAmountRemaining() > 0)
-                    positions.add(getBestPosition(peasant,
-                            goldMine.getPosition().getAdjacentPositions(),
-                            closedPositions));
-                }
 
-                for (Forest forest : stateTracker.getForests()) {
-                    if (forest.getAmountRemaining() > 0)
-                        positions.add(getBestPosition(peasant,
-                                forest.getPosition().getAdjacentPositions(),
-                                closedPositions));
-                }
-            */
-
-            for (Resource resource : stateTracker.getAllResources()){
-                if (resource.getAmountRemaining() > 0){
-                    positions.add(getBestPosition(peasant,
-                            resource.getPosition().getAdjacentPositions(),
-                            closedPositions));
-                }
+            if (stateTracker.woodNeeded()) {
+                positions.addAll(stateTracker.getForests().stream()
+                        .filter(resource -> resource.getAmountRemaining() > 0)
+                        .map(resource -> getBestPosition(peasant,
+                                resource.getPosition().getAdjacentPositions(),
+                                closedPositions)).collect(Collectors.toList()));
+            } else {
+                positions.addAll(stateTracker.getGoldMines().stream()
+                        .filter(resource -> resource.getAmountRemaining() > 0)
+                        .map(resource -> getBestPosition(peasant,
+                                resource.getPosition().getAdjacentPositions(),
+                                closedPositions)).collect(Collectors.toList()));
             }
+
         } else {
             positions.add(getBestPosition(peasant,
                     stateTracker.getTownhall().getPosition().getAdjacentPositions(),

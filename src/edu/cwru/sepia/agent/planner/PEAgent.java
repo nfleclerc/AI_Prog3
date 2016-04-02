@@ -140,11 +140,11 @@ public class PEAgent extends Agent {
                     ));
                     break;
                 case HARVEST:
-                    actionMap.put(id, Action.createPrimitiveGather(
-                            id,
-                            action.getUnit(i).getPosition().getDirection(
-                                    ((HarvestK) action).targetPosition(i))
-                    ));
+                        actionMap.put(id, Action.createPrimitiveGather(
+                                id,
+                                action.getUnit(i).getPosition().getDirection(
+                                        ((HarvestK) action).targetPosition(i))
+                        ));
                     break;
                 case DEPOSIT:
                     actionMap.put(id, Action.createPrimitiveDeposit(
