@@ -104,13 +104,22 @@ public class GameState implements Comparable<GameState> {
             children.add(deposit.apply(this));
         }
         //add all possible states resulting from harvests
-        for (Resource resource : stateTracker.getAllResources()) {
-            HarvestK harvest = new HarvestK(stateTracker.getPeasants(), resource);
-            if (harvest.preconditionsMet(this)) {
-                children.add(harvest.apply(this));
-            }
-
+        HarvestK harvest = new HarvestK(stateTracker.getPeasants(), generateResources());
+        if (harvest.preconditionsMet(this)) {
+            children.add(harvest.apply(this));
         }
+    }
+
+    private Map<Peasant, Resource> generateResources() {
+        Map<Peasant, Resource> resourceMap = new HashMap<>();
+        for (Peasant peasant : stateTracker.getPeasants()){
+            for (Position position : peasant.getPosition().getAdjacentPositions()){
+                stateTracker.getAllResources().stream().filter(resource
+                        -> resource.getPosition().equals(position)).forEach(resource
+                        -> resourceMap.put(peasant, resource));
+            }
+        }
+        return resourceMap;
     }
 
     private Map<Peasant, Position> generatePositions() {
@@ -125,11 +134,15 @@ public class GameState implements Comparable<GameState> {
     }
 
     private Position generateViablePosition(Peasant peasant, List<Position> closedPositions) {
-System.out.println("\nGold: "+stateTracker.getCurrentGold()+"  Wood: "+stateTracker.getCurrentWood()+"  Food: "+stateTracker.getCurrentFood());
+    System.out.println("\nGold: "+stateTracker.getCurrentGold()
+            +"  Wood: "+stateTracker.getCurrentWood()
+            +"  Food: "+stateTracker.getCurrentFood());
         List<Position> positions = new ArrayList<>();
         if (peasant.getCargoAmount() == 0) {
             if (stateTracker.goldNeeded()) {
-                System.out.println("Peasant "+peasant.getID()+" at position "+peasant.getPosition()+": Gold Needed - Current Gold: "+stateTracker.getCurrentGold()+", Needed Gold: 700");
+                System.out.println("Peasant "
+                        +peasant.getID() +" at position "+peasant.getPosition()
+                        +": Gold Needed - Current Gold: "+stateTracker.getCurrentGold()+", Needed Gold: 700");
                 for (GoldMine goldMine : stateTracker.getGoldMines()) {
                     if (goldMine.getAmountRemaining() > 0)
                     positions.add(getBestPosition(peasant,
@@ -137,12 +150,14 @@ System.out.println("\nGold: "+stateTracker.getCurrentGold()+"  Wood: "+stateTrac
                             closedPositions));
                 }
             } else if (stateTracker.woodNeeded()) {
-                System.out.println("Peasant "+peasant.getID()+" at position "+peasant.getPosition()+": Wood Needed - Current Wood: "+stateTracker.getCurrentWood()+", Needed Wood: 700");
+                System.out.println("Peasant "+peasant.getID()+
+                        " at position "+peasant.getPosition()+
+                        ": Wood Needed - Current Wood: "+stateTracker.getCurrentWood()+", Needed Wood: 700");
                 for (Forest forest : stateTracker.getForests()) {
                     if (forest.getAmountRemaining() > 0)
                         positions.add(getBestPosition(peasant,
-                            forest.getPosition().getAdjacentPositions(),
-                            closedPositions));
+                                forest.getPosition().getAdjacentPositions(),
+                                closedPositions));
                 }
             }
         } else {
@@ -162,6 +177,7 @@ System.out.println("\nGold: "+stateTracker.getCurrentGold()+"  Wood: "+stateTrac
 
     private Position getBestPosition(Peasant peasant, List<Position> positions, List<Position> closedPositions) {
         Position currentPosition = peasant.getPosition();
+        if (positions.isEmpty()) return peasant.getPosition();
         Position bestPosition = positions.get(0);
         for (Position position : positions) {
             if (position.chebyshevDistance(currentPosition) < bestPosition.chebyshevDistance(currentPosition)

@@ -100,11 +100,11 @@ public class PEAgent extends Agent {
             for (ActionResult result :
                     historyView.getCommandFeedback(playernum, stateView.getTurnNumber() - 1).values()) {
                 System.out.println(result);
-                if (result.getFeedback() == ActionFeedback.INCOMPLETE) {
+                if (result.getFeedback() != ActionFeedback.COMPLETED) {
                     actionMap.put(result.getAction().getUnitId(), result.getAction());
                 }
             }
-            if (actionMap.isEmpty()){
+            if (actionMap.isEmpty() && !plan.isEmpty()){
                 StripsAction nextAction = plan.pop();
                 actionMap.putAll(createSepiaAction(nextAction));
             }
@@ -143,7 +143,7 @@ public class PEAgent extends Agent {
                     actionMap.put(id, Action.createPrimitiveGather(
                             id,
                             action.getUnit(i).getPosition().getDirection(
-                                    action.targetPosition())
+                                    ((HarvestK) action).targetPosition(i))
                     ));
                     break;
                 case DEPOSIT:
