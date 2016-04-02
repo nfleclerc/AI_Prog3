@@ -115,38 +115,48 @@ public class GameState implements Comparable<GameState> {
 
     private Map<Peasant, Position> generatePositions() {
         Map<Peasant, Position> peasantPositionMap = new HashMap<>();
+        List<Position> closedPositions = new ArrayList<>();
         for (Peasant peasant : stateTracker.getPeasants()){
-                peasantPositionMap.put(peasant, generateViablePosition(peasant));
+            Position position = generateViablePosition(peasant, closedPositions);
+            peasantPositionMap.put(peasant, position);
+            closedPositions.add(position);
         }
         return peasantPositionMap;
     }
 
-    private Position generateViablePosition(Peasant peasant) {
+    private Position generateViablePosition(Peasant peasant, List<Position> closedPositions) {
 
         List<Position> positions = new ArrayList<>();
         if (peasant.getCargoAmount() == 0) {
             if (stateTracker.goldNeeded()) {
                 for (GoldMine goldMine : stateTracker.getGoldMines()) {
-                    positions.add(getBestPosition(peasant, goldMine.getPosition().getAdjacentPositions()));
+                    positions.add(getBestPosition(peasant,
+                            goldMine.getPosition().getAdjacentPositions(),
+                            closedPositions));
                 }
             } else {
                 for (Forest forest : stateTracker.getForests()) {
-                    positions.add(getBestPosition(peasant, forest.getPosition().getAdjacentPositions()));
+                    positions.add(getBestPosition(peasant,
+                            forest.getPosition().getAdjacentPositions(),
+                            closedPositions));
                 }
             }
         } else {
-            positions.add(getBestPosition(peasant, stateTracker.getTownhall().getPosition().getAdjacentPositions()));
+            positions.add(getBestPosition(peasant,
+                    stateTracker.getTownhall().getPosition().getAdjacentPositions(),
+                    closedPositions));
 
         }
 
-        return (getBestPosition(peasant, positions));
+        return (getBestPosition(peasant, positions, closedPositions));
     }
 
-    private Position getBestPosition(Peasant peasant, List<Position> positions) {
+    private Position getBestPosition(Peasant peasant, List<Position> positions, List<Position> closedPositions) {
         Position currentPosition = peasant.getPosition();
         Position bestPosition = positions.get(0);
         for (Position position : positions) {
-            if (position.chebyshevDistance(currentPosition) < bestPosition.chebyshevDistance(currentPosition)) {
+            if (position.chebyshevDistance(currentPosition) < bestPosition.chebyshevDistance(currentPosition)
+                    && !closedPositions.contains(position)) {
                 bestPosition = position;
             }
         }
