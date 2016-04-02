@@ -85,7 +85,6 @@ public class GameState implements Comparable<GameState> {
             } else {
                generateSomeStuff(children);
             }
-
         } else {
             generateSomeStuff(children);
         }
@@ -134,44 +133,38 @@ public class GameState implements Comparable<GameState> {
     }
 
     private Position generateViablePosition(Peasant peasant, List<Position> closedPositions) {
-    System.out.println("\nGold: "+stateTracker.getCurrentGold()
-            +"  Wood: "+stateTracker.getCurrentWood()
-            +"  Food: "+stateTracker.getCurrentFood());
         List<Position> positions = new ArrayList<>();
         if (peasant.getCargoAmount() == 0) {
-            if (stateTracker.goldNeeded()) {
-                System.out.println("Peasant "
-                        +peasant.getID() +" at position "+peasant.getPosition()
-                        +": Gold Needed - Current Gold: "+stateTracker.getCurrentGold()+", Needed Gold: 700");
-                for (GoldMine goldMine : stateTracker.getGoldMines()) {
+            /*
+            for (GoldMine goldMine : stateTracker.getGoldMines()) {
                     if (goldMine.getAmountRemaining() > 0)
                     positions.add(getBestPosition(peasant,
                             goldMine.getPosition().getAdjacentPositions(),
                             closedPositions));
                 }
-            } else if (stateTracker.woodNeeded()) {
-                System.out.println("Peasant "+peasant.getID()+
-                        " at position "+peasant.getPosition()+
-                        ": Wood Needed - Current Wood: "+stateTracker.getCurrentWood()+", Needed Wood: 700");
+
                 for (Forest forest : stateTracker.getForests()) {
                     if (forest.getAmountRemaining() > 0)
                         positions.add(getBestPosition(peasant,
                                 forest.getPosition().getAdjacentPositions(),
                                 closedPositions));
                 }
+            */
+
+            for (Resource resource : stateTracker.getAllResources()){
+                if (resource.getAmountRemaining() > 0){
+                    positions.add(getBestPosition(peasant,
+                            resource.getPosition().getAdjacentPositions(),
+                            closedPositions));
+                }
             }
         } else {
-            System.out.println("Peasant "+peasant.getID()+": Depositing...");
             positions.add(getBestPosition(peasant,
                     stateTracker.getTownhall().getPosition().getAdjacentPositions(),
                     closedPositions));
 
         }
-        if(positions.isEmpty()){
-            System.out.println("No positions found for peasant "+peasant.getID()+" at position "+peasant.getPosition());
-        }
 
-        System.out.println(positions);
         return (getBestPosition(peasant, positions, closedPositions));
     }
 
@@ -179,6 +172,7 @@ public class GameState implements Comparable<GameState> {
         Position currentPosition = peasant.getPosition();
         if (positions.isEmpty()) return peasant.getPosition();
         Position bestPosition = positions.get(0);
+        if (closedPositions.contains(bestPosition)) bestPosition = positions.get(1);
         for (Position position : positions) {
             if (position.chebyshevDistance(currentPosition) < bestPosition.chebyshevDistance(currentPosition)
                     && !closedPositions.contains(position)) {
