@@ -72,7 +72,7 @@ public class HarvestK extends StripsAction {
     public String toString(){
         StringBuilder sb = new StringBuilder();
         sb.append("Harvest:");
-        for (Peasant peasant : peasants){
+        for (Peasant peasant : peasantsAtResource.keySet()){
             sb.append("\t(" + peasant.getID() + ", " + peasantsAtResource.get(peasant).getID() + ")");
         }
         return sb.toString();
