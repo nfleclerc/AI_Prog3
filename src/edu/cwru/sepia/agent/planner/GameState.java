@@ -209,7 +209,7 @@ public class GameState implements Comparable<GameState> {
         return bestPosition;
     }
 
-    /*
+    /**
      * Write your heuristic function here. Remember this must be admissible for the properties of A* to hold. If you
      * can come up with an easy way of computing a consistent heuristic that is even better, but not strictly necessary.
      *

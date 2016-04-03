@@ -31,6 +31,7 @@ public class PEAgent extends Agent {
     private Map<Integer, Integer> peasantIdMap;
     private int townhallId;
     private int peasantTemplateId;
+    private int numsteps;  // game step counter
 
     /**
      * Construct a PEAgent that adheres to a plan.
@@ -115,6 +116,7 @@ public class PEAgent extends Agent {
         } else {
             actionMap.putAll(createSepiaAction(plan.pop()));
         }
+        numsteps++;  // Increment step counter
         return actionMap;
     }
 
@@ -172,7 +174,7 @@ public class PEAgent extends Agent {
 
     @Override
     public void terminalStep(State.StateView stateView, History.HistoryView historyView) {
-
+        System.out.println("Number of steps taken: " + numsteps);
     }
 
     @Override
