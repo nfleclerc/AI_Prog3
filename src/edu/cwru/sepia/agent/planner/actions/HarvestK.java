@@ -78,7 +78,4 @@ public class HarvestK extends StripsAction {
         return sb.toString();
     }
 
-    public Resource getChildResource() {
-        return childResource;
-    }
 }

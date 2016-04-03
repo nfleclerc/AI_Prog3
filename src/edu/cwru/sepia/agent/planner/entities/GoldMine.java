@@ -1,6 +1,5 @@
 package edu.cwru.sepia.agent.planner.entities;
 
-import edu.cwru.sepia.agent.planner.Position;
 import edu.cwru.sepia.environment.model.state.ResourceNode;
 import edu.cwru.sepia.environment.model.state.ResourceType;
 

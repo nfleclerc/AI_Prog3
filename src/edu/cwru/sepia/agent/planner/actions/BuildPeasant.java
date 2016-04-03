@@ -38,7 +38,7 @@ public class BuildPeasant extends StripsAction {
 
     @Override
     public Position targetPosition() {
-        return townhall.getPosition();
+        return null;
     }
 
     @Override
