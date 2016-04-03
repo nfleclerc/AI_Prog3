@@ -194,11 +194,16 @@ public class StateTracker {
     /**
      * Assess the quality of the game state represented by this state tracker.
      *
-     * This heuristic function takes into account several factors pertaining to the overall quality:
-     *   - current resources
-     *   -
+     * This heuristic function takes into account several factors pertaining to the overall quality of this state, and
+     * these factors are scaled in an appropriate manner to conceive a reasonably intelligent heuristic assessment.
      *
-     * @return The heuristic value computed by this function
+     * These factors include:
+     *   - current amounts of resources
+     *   - current number of peasants
+     *   - current positions of peasants
+     *   - current process being carrying out by peasants
+     *
+     * @return A reasonable, utilizable value computed by this heuristic function
      */
     public double heuristic() {
         double heuristic = requiredGold + requiredWood;
@@ -284,7 +289,7 @@ public class StateTracker {
      * @param resource The resource to remove
      */
     public void removeResource(Resource resource) {
-        switch (resource.getType()){
+        switch (resource.getType()) {
             case WOOD:
                 forests.remove(resource);
                 break;
@@ -301,10 +306,9 @@ public class StateTracker {
      * @return The identified resource
      */
     public Resource getResourceById(int id) {
-        for (Resource resource : getAllResources()){
-            if (resource.getID() == id){
+        for (Resource resource : getAllResources()) {
+            if (resource.getID() == id)
                 return resource;
-            }
         }
         return null;
     }

@@ -4,18 +4,24 @@ import edu.cwru.sepia.environment.model.state.ResourceNode;
 import edu.cwru.sepia.environment.model.state.ResourceType;
 
 /**
- * Created by nathaniel on 3/21/16.
- *
+ * This class represents a goldmine resource entity.
  */
-public class GoldMine extends Resource{
+public class Goldmine extends Resource{
 
-
-    public GoldMine(ResourceNode.ResourceView resource) {
+    /**
+     * Construct a goldmine from a ResourceView object.
+     * @param resource The resource to represent
+     */
+    public Goldmine(ResourceNode.ResourceView resource) {
         super(resource);
         type = ResourceType.GOLD;
     }
 
-    public GoldMine(Resource resource) {
+    /**
+     * Construct a goldmine from a Resource object.
+     * @param resource The resource to specialize
+     */
+    public Goldmine(Resource resource) {
         super(resource);
         type = ResourceType.GOLD;
     }
