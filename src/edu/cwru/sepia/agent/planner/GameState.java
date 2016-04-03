@@ -34,10 +34,10 @@ public class GameState implements Comparable<GameState> {
      * Construct a GameState from a stateview object. This is used to construct the initial search node. All other
      * nodes should be constructed from the another constructor you create or by factory functions that you create.
      *
-     * @param state The current stateview at the time the plan is being created
-     * @param playernum The player number of agent that is planning
-     * @param requiredGold The goal amount of gold (e.g. 200 for the small scenario)
-     * @param requiredWood The goal amount of wood (e.g. 200 for the small scenario)
+     * @param state         The current stateview at the time the plan is being created
+     * @param playernum     The player number of agent that is planning
+     * @param requiredGold  The goal amount of gold (e.g. 200 for the small scenario)
+     * @param requiredWood  The goal amount of wood (e.g. 200 for the small scenario)
      * @param buildPeasants True if the BuildPeasant action should be considered
      */
     public GameState(State.StateView state, int playernum, int requiredGold, int requiredWood, boolean buildPeasants) {
@@ -46,10 +46,11 @@ public class GameState implements Comparable<GameState> {
 
     /**
      * Construct a GameState from its parent and the action that is taken to create this child.
-     * @param parent The parent of this state
+     *
+     * @param parent                 The parent of this state
      * @param actionFromParentToThis The action that is performed to create this state from its parent
      */
-    public GameState(GameState parent, StripsAction actionFromParentToThis){
+    public GameState(GameState parent, StripsAction actionFromParentToThis) {
         this.parent = parent;
         this.actionFromParentToThis = actionFromParentToThis;
         this.stateTracker = new StateTracker(parent.getStateTracker(), parent);
@@ -57,6 +58,7 @@ public class GameState implements Comparable<GameState> {
 
     /**
      * Get the StateTracker object that represents this state.
+     *
      * @return The tracker managing this state
      */
     public StateTracker getStateTracker() {
@@ -97,32 +99,34 @@ public class GameState implements Comparable<GameState> {
 
     /**
      * Generate all possible states resulting from performing various actions.
+     *
      * @return A list of children of this state
      */
     private List<GameState> generateSomeStuff() {
-            List<GameState> children = new ArrayList<>();
-            // Add all possible states resulting from performing moves
-            MoveK move = new MoveK(stateTracker.getPeasants(), generatePositions());
-            if (move.preconditionsMet(this)) {
-                children.add(move.apply(this));
-            }
-            // Add all possible states resulting from performing deposits
-            DepositK deposit = new DepositK(stateTracker.getPeasants(), stateTracker.getTownhall());
-            if (deposit.preconditionsMet(this)) {
-                children.add(deposit.apply(this));
-            }
-            //add all possible states resulting from harvests
-            HarvestK harvest = new HarvestK(stateTracker.getPeasants(), generateResources());
-            if (harvest.preconditionsMet(this)) {
-                children.add(harvest.apply(this));
-            }
-            return children;
+        List<GameState> children = new ArrayList<>();
+        // Add all possible states resulting from performing moves
+        MoveK move = new MoveK(stateTracker.getPeasants(), generatePositions());
+        if (move.preconditionsMet(this)) {
+            children.add(move.apply(this));
         }
+        // Add all possible states resulting from performing deposits
+        DepositK deposit = new DepositK(stateTracker.getPeasants(), stateTracker.getTownhall());
+        if (deposit.preconditionsMet(this)) {
+            children.add(deposit.apply(this));
+        }
+        //add all possible states resulting from harvests
+        //this is a comment
+        HarvestK harvest = new HarvestK(stateTracker.getPeasants(), generateResources());
+        if (harvest.preconditionsMet(this)) {
+            children.add(harvest.apply(this));
+        }
+        return children;
+    }
 
     private Map<Peasant, Resource> generateResources() {
         Map<Peasant, Resource> resourceMap = new HashMap<>();
-        for (Peasant peasant : stateTracker.getPeasants()){
-            for (Position position : peasant.getPosition().getAdjacentPositions()){
+        for (Peasant peasant : stateTracker.getPeasants()) {
+            for (Position position : peasant.getPosition().getAdjacentPositions()) {
                 stateTracker.getAllResources().stream().filter(resource
                         -> resource.getPosition().equals(position)).forEach(resource
                         -> resourceMap.put(peasant, resource));
@@ -133,12 +137,13 @@ public class GameState implements Comparable<GameState> {
 
     /**
      * Generate the best position for each peasant in this state
+     *
      * @return A map of positions to peasants
      */
     private Map<Peasant, Position> generatePositions() {
         Map<Peasant, Position> peasantPositionMap = new HashMap<>();
         List<Position> closedPositions = new ArrayList<>();
-        for (Peasant peasant : stateTracker.getPeasants()){
+        for (Peasant peasant : stateTracker.getPeasants()) {
             Position position = generateViablePosition(peasant, closedPositions);
             peasantPositionMap.put(peasant, position);
             closedPositions.add(position);
@@ -148,7 +153,8 @@ public class GameState implements Comparable<GameState> {
 
     /**
      * Generate a viable position for a peasant to move to.
-     * @param peasant The peasant of interest
+     *
+     * @param peasant         The peasant of interest
      * @param closedPositions A list of closed positions
      * @return The most viable position available to the peasant
      */
@@ -184,8 +190,9 @@ public class GameState implements Comparable<GameState> {
 
     /**
      * Get the best position available to the peasant.
-     * @param peasant The peasant of interest
-     * @param positions A list of positions 
+     *
+     * @param peasant         The peasant of interest
+     * @param positions       A list of positions
      * @param closedPositions
      * @return
      */
@@ -216,7 +223,6 @@ public class GameState implements Comparable<GameState> {
     }
 
     /**
-     *
      * Write the function that computes the current cost to get to this node. This is combined with your heuristic to
      * determine which actions/states are better to explore.
      *
@@ -240,7 +246,7 @@ public class GameState implements Comparable<GameState> {
     public int compareTo(GameState o) {
         if (this.getCost() + this.heuristic() > o.getCost() + o.heuristic()) {
             return 1;
-        } else if (this.getCost() + this.heuristic() == o.getCost() + o.heuristic()){
+        } else if (this.getCost() + this.heuristic() == o.getCost() + o.heuristic()) {
             return 0;
         } else {
             return -1;
@@ -280,5 +286,4 @@ public class GameState implements Comparable<GameState> {
     public void removeResource(Resource resource) {
         stateTracker.removeResource(resource);
     }
-
 }
