@@ -105,10 +105,7 @@ public class PlannerAgent extends Agent {
             currentState = open.poll();
 
             //the plan has been found, if at the goal node
-            if (currentState.isGoal()){
-                System.out.println("Plan Found!");
-                return makePlan(currentState);
-            }
+            if (currentState.isGoal()) return makePlan(currentState);
 
             //add node to the open list if not in the closed or open list.
             currentState.generateChildren().stream()
@@ -116,10 +113,7 @@ public class PlannerAgent extends Agent {
                     .filter(child -> !open.contains(child))
                     .forEach(open::add);
 
-
             closed.add(currentState);
-
-
 
         }
 

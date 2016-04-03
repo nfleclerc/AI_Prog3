@@ -84,8 +84,7 @@ public class GameState implements Comparable<GameState> {
      */
     public List<GameState> generateChildren() {
         List<GameState> children = new ArrayList<>();
-        // Generate a state resulting from building a peasant, if possible
-        if (stateTracker.mustBuildPeasants()) {
+        if (stateTracker.mustBuildPeasants()) {  // generate child resulting from building a peasant, if possible
             List<Townhall> townhall = new ArrayList<>();
             townhall.add(stateTracker.getTownhall());
             BuildPeasant buildPeasant = new BuildPeasant(townhall);
@@ -182,8 +181,6 @@ public class GameState implements Comparable<GameState> {
                     closedPositions));
 
         }
-        System.out.println(positions);
-
         return (getBestPosition(peasant, positions, closedPositions));
     }
 

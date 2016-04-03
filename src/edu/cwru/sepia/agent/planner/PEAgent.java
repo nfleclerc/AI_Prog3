@@ -102,13 +102,9 @@ public class PEAgent extends Agent {
         Map<Integer, Action> actionMap = new HashMap<>();
         populateUnitMap(stateView);
         if (stateView.getTurnNumber() != 0) {
-            for (ActionResult result :
-                    historyView.getCommandFeedback(playernum, stateView.getTurnNumber() - 1).values()) {
-                System.out.println(result);
-                if (result.getFeedback() == ActionFeedback.INCOMPLETE) {
-                    actionMap.put(result.getAction().getUnitId(), result.getAction());
-                }
-            }
+            historyView.getCommandFeedback(playernum, stateView.getTurnNumber() - 1).values().stream()
+                    .filter(result -> result.getFeedback() == ActionFeedback.INCOMPLETE)
+                    .forEach(result -> actionMap.put(result.getAction().getUnitId(), result.getAction()));
             if (actionMap.isEmpty() && !plan.isEmpty()){
                 StripsAction nextAction = plan.pop();
                 actionMap.putAll(createSepiaAction(nextAction));
@@ -117,6 +113,7 @@ public class PEAgent extends Agent {
             actionMap.putAll(createSepiaAction(plan.pop()));
         }
         numsteps++;  // Increment step counter
+        if (plan.empty()) System.out.println("Number of steps taken: " + numsteps);
         return actionMap;
     }
 
@@ -174,7 +171,7 @@ public class PEAgent extends Agent {
 
     @Override
     public void terminalStep(State.StateView stateView, History.HistoryView historyView) {
-        System.out.println("Number of steps taken: " + numsteps);
+
     }
 
     @Override
