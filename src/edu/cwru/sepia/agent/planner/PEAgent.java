@@ -31,7 +31,7 @@ public class PEAgent extends Agent {
     private Map<Integer, Integer> peasantIdMap;
     private int townhallId;
     private int peasantTemplateId;
-    private int numsteps;  // game step counter
+    private int numsteps;  // step counter
 
     /**
      * Construct a PEAgent that adheres to a plan.
