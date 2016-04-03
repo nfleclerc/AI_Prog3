@@ -3,15 +3,22 @@ package edu.cwru.sepia.agent.planner.actions;
 import java.util.*;
 import edu.cwru.sepia.agent.planner.GameState;
 import edu.cwru.sepia.agent.planner.Position;
-import edu.cwru.sepia.agent.planner.StateTracker;
 import edu.cwru.sepia.agent.planner.entities.Peasant;
-import edu.cwru.sepia.agent.planner.entities.Resource;
-import javafx.geometry.Pos;
 
+/**
+ * This class represents the move strips action.
+ */
 public class MoveK extends StripsAction {
+
     Map<Peasant, Position> positions;
     List<Peasant> peasants;
 
+    /**
+     * Construct a move strips action.
+     *
+     * @param units     A list of peasants to move
+     * @param positions A map of goal positions to their respective peasants
+     */
     public MoveK(List<Peasant> units, Map<Peasant, Position> positions){
         super(units);
         this.peasants = units;
@@ -40,7 +47,6 @@ public class MoveK extends StripsAction {
         return childState;
     }
 
-    //gets overall cost
     @Override
     public double getCost(){
         double cost = 0.0;
@@ -60,6 +66,12 @@ public class MoveK extends StripsAction {
         return null;
     }
 
+    /**
+     * Get the target position of this move.
+     *
+     * @param index The index of a peasant
+     * @return The target position of the peasant
+     */
     public Position targetPosition(int index){
         return positions.get(peasants.get(index));
     }

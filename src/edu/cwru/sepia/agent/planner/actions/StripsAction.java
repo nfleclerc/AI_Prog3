@@ -3,6 +3,7 @@ package edu.cwru.sepia.agent.planner.actions;
 import edu.cwru.sepia.agent.planner.GameState;
 import edu.cwru.sepia.agent.planner.Position;
 import edu.cwru.sepia.agent.planner.entities.StripsUnit;
+
 import java.util.List;
 
 /**
@@ -50,19 +51,45 @@ public abstract class StripsAction {
      */
     public abstract GameState apply(GameState state);
 
+    /**
+     * Get the enumerated action type associated with this strips action.
+     *
+     * @return The action type
+     */
     public SepiaActionType getType() {
         return type;
     }
 
+    /**
+     * Get the StripsUnit object at the specified index.
+     *
+     * @param index The index
+     * @return The strips unit of interest
+     */
     public StripsUnit getUnit(int index) {
         return units.get(index);
     }
 
+    /**
+     * Get the target position of this action.
+     *
+     * @return The target position
+     */
     public abstract Position targetPosition();
 
+    /**
+     * Get the cost of performing this action.
+     *
+     * @return The cost
+     */
     public double getCost(){
         return 0;
     }
 
+    /**
+     * Get the parallelization parameter of this action.
+     *
+     * @return K - the number of peasants performing this action in parallel
+     */
     public abstract int getK();
 }

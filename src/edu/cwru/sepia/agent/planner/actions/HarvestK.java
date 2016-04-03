@@ -5,17 +5,24 @@ import edu.cwru.sepia.agent.planner.Position;
 import edu.cwru.sepia.agent.planner.entities.Peasant;
 import edu.cwru.sepia.agent.planner.entities.Resource;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class represents the harvest strips action.
+ */
 public class HarvestK extends StripsAction {
 
     private final List<Peasant> peasants;
     private Resource childResource;
     private Map<Peasant, Resource> peasantsAtResource;
 
-
+    /**
+     * Construct a harvest strips action.
+     *
+     * @param units A list of peasants to do the harvesting
+     * @param peasantsAtResource A map of resources to harvest to their respective peasant
+     */
     public HarvestK(List<Peasant> units, Map<Peasant, Resource> peasantsAtResource){
         super(units);
         this.peasants = units;
@@ -58,10 +65,15 @@ public class HarvestK extends StripsAction {
         return null;
     }
 
+    /**
+     * Get the target position of this harvest.
+     *
+     * @param index The index of a peasant
+     * @return The target position of peasant
+     */
     public Position targetPosition(int index){
         return peasantsAtResource.get(peasants.get(index)).getPosition();
     }
-
 
     @Override
     public int getK() {

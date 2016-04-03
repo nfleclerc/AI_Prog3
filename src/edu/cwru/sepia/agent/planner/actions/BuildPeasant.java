@@ -3,18 +3,22 @@ package edu.cwru.sepia.agent.planner.actions;
 import edu.cwru.sepia.agent.planner.GameState;
 import edu.cwru.sepia.agent.planner.Position;
 import edu.cwru.sepia.agent.planner.entities.Peasant;
-import edu.cwru.sepia.agent.planner.entities.StripsUnit;
 import edu.cwru.sepia.agent.planner.entities.Townhall;
+
 import java.util.*;
 
 /**
- * Created by nathaniel on 3/27/16.
+ * This class represents the build (peasant) strips action.
  */
 public class BuildPeasant extends StripsAction {
 
     private final Townhall townhall;
-    private GameState gameState;
 
+    /**
+     * Construct a build (peasant) strips action.
+     *
+     * @param townhall The townhall spawning the peasant
+     */
     public BuildPeasant(List<Townhall> townhall){
         super(townhall);
         this.townhall = townhall.get(0);
@@ -28,7 +32,6 @@ public class BuildPeasant extends StripsAction {
 
     @Override
     public GameState apply(GameState state) {
-        gameState = state;
         GameState childState = new GameState(state, this);
         childState.getStateTracker().buyPeasant();
         List<Peasant> childPeasants = childState.getStateTracker().getPeasants();

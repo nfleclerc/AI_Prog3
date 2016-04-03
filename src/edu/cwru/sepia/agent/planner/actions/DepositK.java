@@ -8,12 +8,21 @@ import edu.cwru.sepia.agent.planner.entities.Townhall;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class represents the deposit strips action.
+ */
 public class DepositK extends StripsAction {
 
     private final Townhall townhall;
     private List<Peasant> peasants;
     private List<Peasant> peasantsToDeposit;
 
+    /**
+     * Construct a deposit strips action.
+     *
+     * @param peasants A list of peasants to do the depositing
+     * @param townhall The townhall into which the peasants will deposit
+     */
     public DepositK(List<Peasant> peasants, Townhall townhall){
         super(peasants);
         this.peasants = peasants;
