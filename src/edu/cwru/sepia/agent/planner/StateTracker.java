@@ -190,19 +190,11 @@ public class StateTracker {
                 }
             }
         }
-        if (containsDuplicatePositions(peasants)){
-            return Double.POSITIVE_INFINITY;
-        }
+
         if (peasants.size() > parent.getStateTracker().getPeasants().size()){
             return 0;
         }
         return heuristic;
-    }
-
-    private boolean containsDuplicatePositions(List<Peasant> peasants) {
-        List<Position> positions = peasants.stream().map(Peasant::getPosition).collect(Collectors.toList());
-        HashSet<Position> positionSet = new HashSet<>(positions);
-        return positions.size() != positionSet.size();
     }
 
     public Forest findClosestForest(Peasant peasant) {
@@ -276,18 +268,8 @@ public class StateTracker {
         return buildPeasants;
     }
 
-    public int getCurrentWood() {
-        return currentWood;
-    }
-
     public boolean woodNeeded() {
         return currentWood < requiredWood;
     }
 
-    public List<Resource> getClosestResources() {
-        List<Resource> closestResources = new ArrayList<>();
-        closestResources.add(findClosestForest(peasants.get(0)));
-        closestResources.add(findClosestGoldMine(peasants.get(0)));
-        return closestResources;
-    }
 }
