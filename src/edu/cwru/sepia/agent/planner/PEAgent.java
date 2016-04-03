@@ -108,7 +108,7 @@ public class PEAgent extends Agent {
                     actionMap.put(result.getAction().getUnitId(), result.getAction());
                 }
             }
-            if (actionMap.isEmpty()){
+            if (actionMap.isEmpty() && !plan.isEmpty()){
                 StripsAction nextAction = plan.pop();
                 actionMap.putAll(createSepiaAction(nextAction));
             }
@@ -136,7 +136,7 @@ public class PEAgent extends Agent {
      */
     private Map<Integer, Action> createSepiaAction(StripsAction action) {
         Map<Integer, Action> actionMap = new HashMap<>();
-        for (int i = 0; i < peasantIdMap.size() - 1; i++) {
+        for (int i = 0; i <  action.getK(); i++) {
             int id = peasantIdMap.get(action.getUnit(i).getID());
             switch (action.getType()) {
                 case MOVE:
@@ -148,11 +148,11 @@ public class PEAgent extends Agent {
                     ));
                     break;
                 case HARVEST:
-                    actionMap.put(id, Action.createPrimitiveGather(
-                            id,
-                            action.getUnit(i).getPosition().getDirection(
-                                    action.targetPosition())
-                    ));
+                        actionMap.put(id, Action.createPrimitiveGather(
+                                id,
+                                action.getUnit(i).getPosition().getDirection(
+                                        ((HarvestK) action).targetPosition(i))
+                        ));
                     break;
                 case DEPOSIT:
                     actionMap.put(id, Action.createPrimitiveDeposit(

@@ -51,6 +51,11 @@ public class MoveK extends StripsAction {
     }
 
     @Override
+    public int getK() {
+        return peasants.size();
+    }
+
+    @Override
     public Position targetPosition() {
         return null;
     }

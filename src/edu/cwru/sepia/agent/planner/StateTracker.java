@@ -84,7 +84,7 @@ public class StateTracker {
     }
 
     public boolean isGoal() {
-        return requiredWood == currentWood && requiredGold == currentGold;
+        return requiredWood <= currentWood && requiredGold <= currentGold;
     }
 
     @Override
@@ -156,10 +156,10 @@ public class StateTracker {
         heuristic -= currentGold;
         heuristic -= currentWood;
         for (Peasant peasant : peasants) {
-            if (currentGold <= currentWood) {
+            if (goldNeeded()) {
                 //if no gold is had, go to nearest nonempty goldmine
                 if (peasant.getCargoAmount() == 0) {
-                    if (!forests.isEmpty()) {
+                    if (!goldMines.isEmpty()) {
                         //find nearest nonempty goldmine
                         GoldMine goldMine = findClosestGoldMine(peasant);
                         //find distance to it
@@ -282,5 +282,12 @@ public class StateTracker {
 
     public boolean woodNeeded() {
         return currentWood < requiredWood;
+    }
+
+    public List<Resource> getClosestResources() {
+        List<Resource> closestResources = new ArrayList<>();
+        closestResources.add(findClosestForest(peasants.get(0)));
+        closestResources.add(findClosestGoldMine(peasants.get(0)));
+        return closestResources;
     }
 }

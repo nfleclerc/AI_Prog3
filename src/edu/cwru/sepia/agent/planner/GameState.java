@@ -5,6 +5,7 @@ import edu.cwru.sepia.agent.planner.entities.*;
 import edu.cwru.sepia.environment.model.state.State;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This class is used to represent the state of the game after applying one of the available actions. It will also
@@ -99,25 +100,35 @@ public class GameState implements Comparable<GameState> {
      * @return A list of children of this state
      */
     private List<GameState> generateSomeStuff() {
-        List<GameState> children = new ArrayList<>();
-        // Add all possible states resulting from performing moves
-        MoveK move = new MoveK(stateTracker.getPeasants(), generatePositions());
-        if (move.preconditionsMet(this)) {
-            children.add(move.apply(this));
-        }
-        // Add all possible states resulting from performing deposits
-        DepositK deposit = new DepositK(stateTracker.getPeasants(), stateTracker.getTownhall());
-        if (deposit.preconditionsMet(this)) {
-            children.add(deposit.apply(this));
-        }
-        // Add all possible states resulting from performing harvests
-        for (Resource resource : stateTracker.getAllResources()) {
-            HarvestK harvest = new HarvestK(stateTracker.getPeasants(), resource);
+            List<GameState> children = new ArrayList<>();
+            // Add all possible states resulting from performing moves
+            MoveK move = new MoveK(stateTracker.getPeasants(), generatePositions());
+            if (move.preconditionsMet(this)) {
+                children.add(move.apply(this));
+            }
+            // Add all possible states resulting from performing deposits
+            DepositK deposit = new DepositK(stateTracker.getPeasants(), stateTracker.getTownhall());
+            if (deposit.preconditionsMet(this)) {
+                children.add(deposit.apply(this));
+            }
+            //add all possible states resulting from harvests
+            HarvestK harvest = new HarvestK(stateTracker.getPeasants(), generateResources());
             if (harvest.preconditionsMet(this)) {
                 children.add(harvest.apply(this));
             }
+            return children;
         }
-        return children;
+
+    private Map<Peasant, Resource> generateResources() {
+        Map<Peasant, Resource> resourceMap = new HashMap<>();
+        for (Peasant peasant : stateTracker.getPeasants()){
+            for (Position position : peasant.getPosition().getAdjacentPositions()){
+                stateTracker.getAllResources().stream().filter(resource
+                        -> resource.getPosition().equals(position)).forEach(resource
+                        -> resourceMap.put(peasant, resource));
+            }
+        }
+        return resourceMap;
     }
 
     /**
@@ -144,21 +155,22 @@ public class GameState implements Comparable<GameState> {
     private Position generateViablePosition(Peasant peasant, List<Position> closedPositions) {
         List<Position> positions = new ArrayList<>();
         if (peasant.getCargoAmount() == 0) {
-            if (stateTracker.goldNeeded()) {
-                for (GoldMine goldMine : stateTracker.getGoldMines()) {
-                    if (goldMine.getAmountRemaining() > 0)
-                        positions.add(getBestPosition(peasant,
-                                goldMine.getPosition().getAdjacentPositions(),
-                                closedPositions));
-                }
-            } else if (stateTracker.woodNeeded()) {
-                for (Forest forest : stateTracker.getForests()) {
-                    if (forest.getAmountRemaining() > 0)
-                        positions.add(getBestPosition(peasant,
-                                forest.getPosition().getAdjacentPositions(),
-                                closedPositions));
-                }
+
+
+            if (stateTracker.woodNeeded()) {
+                positions.addAll(stateTracker.getForests().stream()
+                        .filter(resource -> resource.getAmountRemaining() > 0)
+                        .map(resource -> getBestPosition(peasant,
+                                resource.getPosition().getAdjacentPositions(),
+                                closedPositions)).collect(Collectors.toList()));
+            } else {
+                positions.addAll(stateTracker.getGoldMines().stream()
+                        .filter(resource -> resource.getAmountRemaining() > 0)
+                        .map(resource -> getBestPosition(peasant,
+                                resource.getPosition().getAdjacentPositions(),
+                                closedPositions)).collect(Collectors.toList()));
             }
+
         } else {
             positions.add(getBestPosition(peasant,
                     stateTracker.getTownhall().getPosition().getAdjacentPositions(),
@@ -166,6 +178,7 @@ public class GameState implements Comparable<GameState> {
 
         }
         System.out.println(positions);
+
         return (getBestPosition(peasant, positions, closedPositions));
     }
 
@@ -178,7 +191,9 @@ public class GameState implements Comparable<GameState> {
      */
     private Position getBestPosition(Peasant peasant, List<Position> positions, List<Position> closedPositions) {
         Position currentPosition = peasant.getPosition();
+        if (positions.isEmpty()) return peasant.getPosition();
         Position bestPosition = positions.get(0);
+        if (closedPositions.contains(bestPosition)) bestPosition = positions.get(1);
         for (Position position : positions) {
             if (position.chebyshevDistance(currentPosition) < bestPosition.chebyshevDistance(currentPosition)
                     && !closedPositions.contains(position)) {

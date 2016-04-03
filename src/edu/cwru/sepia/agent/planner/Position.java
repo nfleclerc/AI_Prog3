@@ -20,7 +20,6 @@ public class Position {
 
     public final int x;
     public final int y;
-    private boolean blocked;
 
     public Position(int x, int y) {
         this.x = x;
@@ -156,21 +155,6 @@ public class Position {
         return null;
     }
 
-    /**
-     * Determine whether this position is blocked.
-     * @return <code>true</code> if this position is blocked; <code>false</code> otherwise
-     */
-    public boolean isBlocked() {
-        return blocked;
-    }
-
-    /**
-     * Set whether this position is blocked.
-     * @param blocked <code>true</code> if this position is blocked; <code>false</code> otherwise
-     */
-    public void setBlocked(boolean blocked) {
-        this.blocked = blocked;
-    }
 
     /**
      * Utility function. Allows you to check equality with pos1.equals(pos2) instead of manually checking if x and y
@@ -211,4 +195,5 @@ public class Position {
     public String toString() {
         return "(" + x + ", " + y + ")";
     }
+
 }

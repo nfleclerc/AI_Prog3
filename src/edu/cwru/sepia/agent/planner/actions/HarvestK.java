@@ -11,29 +11,28 @@ import java.util.Map;
 
 public class HarvestK extends StripsAction {
 
-    private Resource resource;
-    private List<Peasant> peasants;
+    private final List<Peasant> peasants;
+    private Resource childResource;
     private Map<Peasant, Resource> peasantsAtResource;
 
 
-    public HarvestK(List<Peasant> units, Resource resource){
+    public HarvestK(List<Peasant> units, Map<Peasant, Resource> peasantsAtResource){
         super(units);
         this.peasants = units;
-        this.resource = resource;
-        this.peasantsAtResource = new HashMap<>();
+        this.peasantsAtResource = peasantsAtResource;
         this.type = SepiaActionType.HARVEST;
     }
 
     @Override
     public boolean preconditionsMet(GameState state) {
-        for (Peasant peasant : peasants) {
-            if ((peasant.getCargoAmount() == 0 &&
-                    resource.getAmountRemaining() > 0 &&
-                    peasant.getPosition().isAdjacent(resource.getPosition()))) {
-                        peasantsAtResource.put(peasant, resource);
-                    }
+        for (Peasant peasant : peasantsAtResource.keySet()) {
+            if (!(peasant.getCargoAmount() == 0 &&
+                    peasantsAtResource.get(peasant).getAmountRemaining() > 0 &&
+                    peasant.getPosition().isAdjacent(peasantsAtResource.get(peasant).getPosition()))) {
+                return false;
             }
-        return !peasantsAtResource.isEmpty();
+        }
+        return true;
     }
 
     @Override
@@ -41,7 +40,7 @@ public class HarvestK extends StripsAction {
         GameState childState = new GameState(state, this);
         for(Peasant peasant : peasantsAtResource.keySet()) {
                 Peasant childPeasant = childState.getStateTracker().getPeasantById(peasant.getID());
-                Resource childResource = childState.getStateTracker().getResourceById(
+                childResource = childState.getStateTracker().getResourceById(
                         peasantsAtResource.get(peasant).getID());
                 if (childResource != null) {
                     childPeasant.carry(childResource.getType(), 100);
@@ -56,16 +55,30 @@ public class HarvestK extends StripsAction {
 
     @Override
     public Position targetPosition() {
-        return resource.getPosition();
+        return null;
+    }
+
+    public Position targetPosition(int index){
+        return peasantsAtResource.get(peasants.get(index)).getPosition();
+    }
+
+
+    @Override
+    public int getK() {
+        return peasantsAtResource.size();
     }
 
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
         sb.append("Harvest:");
-        for (Peasant peasant : peasants){
-            sb.append("\t(" + peasant.getID() + ", " + resource.getID() + ")");
+        for (Peasant peasant : peasantsAtResource.keySet()){
+            sb.append("\t(" + peasant.getID() + ", " + peasantsAtResource.get(peasant).getID() + ")");
         }
         return sb.toString();
+    }
+
+    public Resource getChildResource() {
+        return childResource;
     }
 }
