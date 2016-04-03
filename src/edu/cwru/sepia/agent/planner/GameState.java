@@ -100,7 +100,7 @@ public class GameState implements Comparable<GameState> {
     /**
      * Generate all possible states resulting from performing various actions.
      *
-     * @return A list of children of this state
+     * @return A list of children of this GameState
      */
     private List<GameState> generateSomeStuff() {
         List<GameState> children = new ArrayList<>();
