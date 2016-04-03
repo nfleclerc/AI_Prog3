@@ -115,7 +115,6 @@ public class GameState implements Comparable<GameState> {
             children.add(deposit.apply(this));
         }
         //add all possible states resulting from harvests
-        //this is a comment
         HarvestK harvest = new HarvestK(stateTracker.getPeasants(), generateResources());
         if (harvest.preconditionsMet(this)) {
             children.add(harvest.apply(this));
