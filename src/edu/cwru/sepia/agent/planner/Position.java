@@ -157,6 +157,22 @@ public class Position {
     }
 
     /**
+     * Determine whether this position is blocked.
+     * @return <code>true</code> if this position is blocked; <code>false</code> otherwise
+     */
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    /**
+     * Set whether this position is blocked.
+     * @param blocked <code>true</code> if this position is blocked; <code>false</code> otherwise
+     */
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
+
+    /**
      * Utility function. Allows you to check equality with pos1.equals(pos2) instead of manually checking if x and y
      * are the same.
      *
@@ -194,13 +210,5 @@ public class Position {
     @Override
     public String toString() {
         return "(" + x + ", " + y + ")";
-    }
-
-    public boolean isBlocked() {
-        return blocked;
-    }
-
-    public void setBlocked(boolean blocked) {
-        this.blocked = blocked;
     }
 }

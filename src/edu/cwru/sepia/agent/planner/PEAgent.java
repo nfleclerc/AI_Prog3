@@ -32,11 +32,15 @@ public class PEAgent extends Agent {
     private int townhallId;
     private int peasantTemplateId;
 
+    /**
+     * Construct a PEAgent that adheres to a plan.
+     * @param playernum The player number associated with this agent
+     * @param plan The plan that will lead this agent to victory
+     */
     public PEAgent(int playernum, Stack<StripsAction> plan) {
         super(playernum);
         peasantIdMap = new HashMap<Integer, Integer>();
         this.plan = plan;
-
     }
 
     @Override
@@ -114,6 +118,10 @@ public class PEAgent extends Agent {
         return actionMap;
     }
 
+    /**
+     * Populate the map of unit IDs using the provided stateview object.
+     * @param stateView The current stateview for populating the unit ID map
+     */
     private void populateUnitMap(State.StateView stateView) {
         int i = 0;
         for (Unit.UnitView unitView : stateView.getAllUnits()) {

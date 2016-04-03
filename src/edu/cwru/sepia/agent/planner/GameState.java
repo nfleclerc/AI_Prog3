@@ -7,7 +7,7 @@ import edu.cwru.sepia.environment.model.state.State;
 import java.util.*;
 
 /**
- * This class is used to represent the state of the game after applying one of the avaiable actions. It will also
+ * This class is used to represent the state of the game after applying one of the available actions. It will also
  * track the A* specific information such as the parent pointer and the cost and heuristic function. Remember that
  * unlike the path planning A* from the first assignment the cost of an action may be more than 1. Specifically the cost
  * of executing a compound action such as move can be more than 1. You will need to account for this in your heuristic
@@ -43,12 +43,21 @@ public class GameState implements Comparable<GameState> {
         this.stateTracker = new StateTracker(state, playernum, requiredGold, requiredWood, buildPeasants);
     }
 
+    /**
+     * Construct a GameState from its parent and the action that is taken to create this child.
+     * @param parent The parent of this state
+     * @param actionFromParentToThis The action that is performed to create this state from its parent
+     */
     public GameState(GameState parent, StripsAction actionFromParentToThis){
         this.parent = parent;
         this.actionFromParentToThis = actionFromParentToThis;
         this.stateTracker = new StateTracker(parent.getStateTracker(), parent);
     }
 
+    /**
+     * Get the StateTracker object that represents this state.
+     * @return The tracker managing this state
+     */
     public StateTracker getStateTracker() {
         return stateTracker;
     }
@@ -70,49 +79,51 @@ public class GameState implements Comparable<GameState> {
      *
      * @return A list of the possible successor states and their associated actions
      */
-
     public List<GameState> generateChildren() {
         List<GameState> children = new ArrayList<>();
-
+        // Generate a state resulting from building a peasant, if possible
         if (stateTracker.mustBuildPeasants()) {
-
             List<Townhall> townhall = new ArrayList<>();
             townhall.add(stateTracker.getTownhall());
             BuildPeasant buildPeasant = new BuildPeasant(townhall);
-
             if (buildPeasant.preconditionsMet(this)) {
                 children.add(buildPeasant.apply(this));
-            } else {
-               generateSomeStuff(children);
+                return children;
             }
-
-        } else {
-            generateSomeStuff(children);
         }
-        return children;
+        return generateSomeStuff();  // default child state generation method
     }
 
-    private void generateSomeStuff(List<GameState> children) {
-
+    /**
+     * Generate all possible states resulting from performing various actions.
+     * @return A list of children of this state
+     */
+    private List<GameState> generateSomeStuff() {
+        List<GameState> children = new ArrayList<>();
+        // Add all possible states resulting from performing moves
         MoveK move = new MoveK(stateTracker.getPeasants(), generatePositions());
         if (move.preconditionsMet(this)) {
             children.add(move.apply(this));
         }
-        //add all possible states resulting from deposits
+        // Add all possible states resulting from performing deposits
         DepositK deposit = new DepositK(stateTracker.getPeasants(), stateTracker.getTownhall());
         if (deposit.preconditionsMet(this)) {
             children.add(deposit.apply(this));
         }
-        //add all possible states resulting from harvests
+        // Add all possible states resulting from performing harvests
         for (Resource resource : stateTracker.getAllResources()) {
             HarvestK harvest = new HarvestK(stateTracker.getPeasants(), resource);
             if (harvest.preconditionsMet(this)) {
                 children.add(harvest.apply(this));
             }
-
         }
+        return children;
     }
 
+    /**
+     * Generate the best position for each peasant in this state
+     * @return A map of positions to peasants
+     */
     private Map<Peasant, Position> generatePositions() {
         Map<Peasant, Position> peasantPositionMap = new HashMap<>();
         List<Position> closedPositions = new ArrayList<>();
@@ -124,23 +135,28 @@ public class GameState implements Comparable<GameState> {
         return peasantPositionMap;
     }
 
+    /**
+     * Generate a viable position for a peasant to move to.
+     * @param peasant The peasant of interest
+     * @param closedPositions A list of closed positions
+     * @return The most viable position available to the peasant
+     */
     private Position generateViablePosition(Peasant peasant, List<Position> closedPositions) {
-
         List<Position> positions = new ArrayList<>();
         if (peasant.getCargoAmount() == 0) {
             if (stateTracker.goldNeeded()) {
                 for (GoldMine goldMine : stateTracker.getGoldMines()) {
                     if (goldMine.getAmountRemaining() > 0)
-                    positions.add(getBestPosition(peasant,
-                            goldMine.getPosition().getAdjacentPositions(),
-                            closedPositions));
+                        positions.add(getBestPosition(peasant,
+                                goldMine.getPosition().getAdjacentPositions(),
+                                closedPositions));
                 }
             } else if (stateTracker.woodNeeded()) {
                 for (Forest forest : stateTracker.getForests()) {
                     if (forest.getAmountRemaining() > 0)
                         positions.add(getBestPosition(peasant,
-                            forest.getPosition().getAdjacentPositions(),
-                            closedPositions));
+                                forest.getPosition().getAdjacentPositions(),
+                                closedPositions));
                 }
             }
         } else {
@@ -149,11 +165,17 @@ public class GameState implements Comparable<GameState> {
                     closedPositions));
 
         }
-
         System.out.println(positions);
         return (getBestPosition(peasant, positions, closedPositions));
     }
 
+    /**
+     * Get the best position available to the peasant.
+     * @param peasant The peasant of interest
+     * @param positions A list of positions 
+     * @param closedPositions
+     * @return
+     */
     private Position getBestPosition(Peasant peasant, List<Position> positions, List<Position> closedPositions) {
         Position currentPosition = peasant.getPosition();
         Position bestPosition = positions.get(0);
