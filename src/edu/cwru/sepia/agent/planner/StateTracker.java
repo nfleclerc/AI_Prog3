@@ -34,9 +34,10 @@ public class StateTracker {
     private GameState parent;
 
     /**
-     * This constructor initializes this state tracker using another state tracker
+     * Construct a StateTracker object from another state tracker and parent state.
      *
-     * @param stateTracker The state tracker to represent by this tracker
+     * @param stateTracker A state tracker to reconstruct into this one
+     * @param parent The parent game state for making comparisons
      */
     public StateTracker(StateTracker stateTracker, GameState parent) {
         xExtent = stateTracker.xExtent;
@@ -56,7 +57,15 @@ public class StateTracker {
         currentFood = stateTracker.currentFood;
     }
 
-    public StateTracker(State.StateView state, int playerNum, int requiredGold, int requiredWood, boolean buildPeasants) {
+    /**
+     * Construct a StateTracker object from the provided stateview and world specifications.
+     * @param state
+     * @param playerNum     The player number associated with this state
+     * @param requiredWood  The amount of wood required to achieve victory in this world
+     * @param requiredGold  The amount of gold required to achieve victory in this world
+     * @param buildPeasants Whether building peasants is allowed in this world
+     */
+    public StateTracker(State.StateView state, int playerNum, int requiredWood, int requiredGold, boolean buildPeasants) {
         xExtent = state.getXExtent();
         yExtent = state.getYExtent();
         turnNumber = state.getTurnNumber();
@@ -68,23 +77,26 @@ public class StateTracker {
         currentWood = 0;
         currentFood = 1;
         for (ResourceNode.ResourceView resource : state.getAllResourceNodes()) {
-            if (resource.getType() == ResourceNode.Type.GOLD_MINE) {
+            if (resource.getType() == ResourceNode.Type.GOLD_MINE)
                 goldMines.add(new GoldMine(resource));
-            } else {
+            else
                 forests.add(new Forest(resource));
-            }
         }
-        for (Unit.UnitView unit : state.getAllUnits()){
-            if (unit.getTemplateView().getName().equals("Peasant")){
+        for (Unit.UnitView unit : state.getAllUnits()) {
+            if (unit.getTemplateView().getName().equals("Peasant"))
                 peasants.add(new Peasant(unit));
-            } else {
+            else
                 townhall = new Townhall(unit);
-            }
         }
     }
 
+    /**
+     * Determine whether this state tracker represents the goal state.
+     *
+     * @return <code>true</code> if the demand for resources has been met; <code>false</code> if more work is needed
+     */
     public boolean isGoal() {
-        return requiredWood <= currentWood && requiredGold <= currentGold;
+        return currentWood >= requiredWood && currentGold >= requiredGold;
     }
 
     @Override
@@ -108,11 +120,20 @@ public class StateTracker {
                 townhall.hashCode();
     }
 
-
+    /**
+     * Get all the peasants in the world.
+     *
+     * @return A list of all peasants currently present in this game state
+     */
     public List<Peasant> getPeasants() {
         return peasants;
     }
 
+    /**
+     * Get all the resources in the world.
+     *
+     * @return A list of all resources currently present in this game state
+     */
     public List<Resource> getAllResources() {
         List<Resource> resources = new ArrayList<>();
         resources.addAll(goldMines);
@@ -120,6 +141,11 @@ public class StateTracker {
         return resources;
     }
 
+    /**
+     * Get the townhall in the world.
+     *
+     * @return A Townhall object representing the townhall currently present in this game state
+     */
     public Townhall getTownhall() {
         return townhall;
     }
@@ -134,91 +160,130 @@ public class StateTracker {
         }
     }
 
+    /**
+     * Get the x-extent of the world.
+     *
+     * @return The number of 'columns' in the world
+     */
     public double getXExtent() {
         return xExtent;
     }
 
+    /**
+     * Get the y-extent of the world.
+     *
+     * @return The number of 'rows' in the world
+     */
     public double getYExtent() {
         return yExtent;
     }
 
+    /**
+     * Get the peasant with the specified ID.
+     *
+     * @param id The unit ID of the peasant
+     * @return The identified peasant
+     */
     public Peasant getPeasantById(int id){
         for (Peasant peasant : peasants){
-            if (peasant.getID() == id){
+            if (peasant.getID() == id)
                 return peasant;
-            }
         }
         return null;
     }
 
+    /**
+     * Assess the quality of the game state represented by this state tracker.
+     *
+     * This heuristic function takes into account several factors pertaining to the overall quality:
+     *   - current resources
+     *   -
+     *
+     * @return The heuristic value computed by this function
+     */
     public double heuristic() {
         double heuristic = requiredGold + requiredWood;
         heuristic -= currentGold;
         heuristic -= currentWood;
         for (Peasant peasant : peasants) {
             if (goldNeeded()) {
-                //if no gold is had, go to nearest nonempty goldmine
+                // If there is a demand for gold, seek out the closest goldmine
                 if (peasant.getCargoAmount() == 0) {
                     if (!goldMines.isEmpty()) {
-                        //find nearest nonempty goldmine
+                        // Compute distance to nearest nonempty goldmine, add to heuristic
                         GoldMine goldMine = findClosestGoldMine(peasant);
-                        //find distance to it
-                        //add the distance to this heuristic
                         heuristic += goldMine.getPosition().chebyshevDistance(peasant.getPosition()) * 2;
                     }
                 } else {
-                    //if next to a goldmine harvest
-                    //if gold is had, go to the townhall
-                    //add distance to this heuristic
+                    // Compute distance to townhall, add to heuristic
                     heuristic += townhall.getPosition().chebyshevDistance(peasant.getPosition()) * .5;
                 }
             } else {
-                //if no wood is had, go to nearest nonempty forest
+                // If there is a demand for wood, seek out the closest forest
                 if (peasant.getCargoAmount() == 0) {
-                    //find nearest nonempty forest
                     if (!forests.isEmpty()) {
+                        // Compute distance to nearest nonempty forest, add to heuristic
                         Forest forest = findClosestForest(peasant);
-                        //find distance to it
-                        //add the distance to this heuristic
                         heuristic += forest.getPosition().chebyshevDistance(peasant.getPosition()) * 2;
                     }
                 } else {
-                    //if next to a goldmine harvest
-                    //if gold is had, go to the townhall
-                    //add distance to this heuristic
+                    // Compute distance to townhall, add to heuristic
                     heuristic += townhall.getPosition().chebyshevDistance(peasant.getPosition()) * .5;
                 }
             }
         }
-
+        // Sweeten the deal if there are more peasants in this state than in the parent state
         if (peasants.size() > parent.getStateTracker().getPeasants().size()){
-            return 0;
+            heuristic *= 1000;
         }
         return heuristic;
     }
 
+    /**
+     * Find the forest closest to the specified peasant.
+     *
+     * @param peasant The peasant of interest
+     * @return The closest forest
+     */
     public Forest findClosestForest(Peasant peasant) {
         Forest closestForest = forests.get(0);
+        int thisDistance, closestDistance;
+
         for (Forest forest : forests) {
-            if (forest.getPosition().chebyshevDistance(peasant.getPosition()) <
-                    closestForest.getPosition().chebyshevDistance(peasant.getPosition())) {
-                closestForest = forest;
-            }
+
+            thisDistance = forest.getPosition().chebyshevDistance(peasant.getPosition());
+            closestDistance = closestForest.getPosition().chebyshevDistance(peasant.getPosition());
+
+            if (thisDistance < closestDistance) closestForest = forest;
         }
         return closestForest;
     }
 
+    /**
+     * Find the goldmine closest to the specified peasant.
+     *
+     * @param peasant The peasant of interest
+     * @return The closest goldmine
+     */
     public GoldMine findClosestGoldMine(Peasant peasant) {
         GoldMine closestGoldMine = goldMines.get(0);
+        int thisDistance, closestDistance;
+
         for (GoldMine goldMine : goldMines) {
-            if (goldMine.getPosition().chebyshevDistance(peasant.getPosition()) <
-                    closestGoldMine.getPosition().chebyshevDistance(peasant.getPosition())) {
-                closestGoldMine = goldMine;
-            }
+
+            thisDistance = goldMine.getPosition().chebyshevDistance(peasant.getPosition());
+            closestDistance = closestGoldMine.getPosition().chebyshevDistance(peasant.getPosition());
+
+            if (thisDistance < closestDistance) closestGoldMine = goldMine;
         }
         return closestGoldMine;
     }
 
+    /**
+     * Remove the specified resource from the list of tracked resources.
+     *
+     * @param resource The resource to remove
+     */
     public void removeResource(Resource resource) {
         switch (resource.getType()){
             case WOOD:
@@ -230,6 +295,12 @@ public class StateTracker {
         }
     }
 
+    /**
+     * Get the resource with the specified resource ID.
+     *
+     * @param id The resource ID
+     * @return The identified resource
+     */
     public Resource getResourceById(int id) {
         for (Resource resource : getAllResources()){
             if (resource.getID() == id){
@@ -239,37 +310,74 @@ public class StateTracker {
         return null;
     }
 
+    /**
+     * Get all the goldmines in the world.
+     *
+     * @return A list of goldmines
+     */
     public List<GoldMine> getGoldMines() {
         return goldMines;
     }
 
+    /**
+     * Get all the forests in the world.
+     * @return A list of forests
+     */
     public List<Forest> getForests() {
         return forests;
     }
 
+    /**
+     * Determine whether gold is needed.
+     *
+     * @return <code>true</code> if gold is needed; <code>false</code> otherwise
+     */
     public boolean goldNeeded() {
         return currentGold < requiredGold;
     }
 
+    /**
+     * Determine whether wood is needed.
+     *
+     * @return <code>true</code> if wood is needed; <code>false</code> otherwise
+     */
+    public boolean woodNeeded() {
+        return currentWood < requiredWood;
+    }
+
+    /**
+     * Get the current amount of gold.
+     *
+     * @return current gold
+     */
     public int getCurrentGold() {
         return currentGold;
     }
 
+    /**
+     * Get the current amount of food.
+     *
+     * @return current food
+     */
     public int getCurrentFood() {
         return currentFood;
     }
 
+    /**
+     * Adjust the amount of resources that account for building a peasant.
+     */
     public void buyPeasant() {
         currentGold -= 400;
         currentFood += 1;
     }
 
+    /**
+     * Determine whether it is necessary in this state to build peasants.
+     *
+     * @return <code>true</code> if peasants are needed; <code>false</code> otherwise
+     */
     public boolean mustBuildPeasants() {
         return buildPeasants;
-    }
-
-    public boolean woodNeeded() {
-        return currentWood < requiredWood;
     }
 
 }

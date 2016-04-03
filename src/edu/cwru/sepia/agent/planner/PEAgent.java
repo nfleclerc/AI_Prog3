@@ -4,11 +4,9 @@ import edu.cwru.sepia.action.*;
 import edu.cwru.sepia.agent.Agent;
 import edu.cwru.sepia.agent.planner.actions.*;
 import edu.cwru.sepia.environment.model.history.History;
-import edu.cwru.sepia.environment.model.state.ResourceType;
 import edu.cwru.sepia.environment.model.state.State;
 import edu.cwru.sepia.environment.model.state.Template;
 import edu.cwru.sepia.environment.model.state.Unit;
-import edu.cwru.sepia.util.Direction;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -23,7 +21,6 @@ public class PEAgent extends Agent {
 
     // The plan being executed
     private Stack<StripsAction> plan = null;
-    private Stack<StripsAction> previousStripsActions = new Stack<>();
 
     // maps the real unit Ids to the plan's unit ids
     // when you're planning you won't know the true unit IDs that sepia assigns. So you'll use placeholders (1, 2, 3).
@@ -35,6 +32,7 @@ public class PEAgent extends Agent {
 
     /**
      * Construct a PEAgent that adheres to a plan.
+     *
      * @param playernum The player number associated with this agent
      * @param plan The plan that will lead this agent to victory
      */
@@ -101,6 +99,7 @@ public class PEAgent extends Agent {
     public Map<Integer, Action> middleStep(State.StateView stateView, History.HistoryView historyView) {
         Map<Integer, Action> actionMap = new HashMap<>();
         populateUnitMap(stateView);
+
         if (stateView.getTurnNumber() != 0) {
             historyView.getCommandFeedback(playernum, stateView.getTurnNumber() - 1).values().stream()
                     .filter(result -> result.getFeedback() == ActionFeedback.INCOMPLETE)
@@ -109,9 +108,8 @@ public class PEAgent extends Agent {
                 StripsAction nextAction = plan.pop();
                 actionMap.putAll(createSepiaAction(nextAction));
             }
-        } else {
-            actionMap.putAll(createSepiaAction(plan.pop()));
-        }
+        } else actionMap.putAll(createSepiaAction(plan.pop()));
+
         numsteps++;  // Increment step counter
         if (plan.empty()) System.out.println("Number of steps taken: " + numsteps);
         return actionMap;
@@ -119,17 +117,18 @@ public class PEAgent extends Agent {
 
     /**
      * Populate the map of unit IDs using the provided stateview object.
+     *
      * @param stateView The current stateview for populating the unit ID map
      */
     private void populateUnitMap(State.StateView stateView) {
         int i = 0;
-        for (Unit.UnitView unitView : stateView.getAllUnits()) {
+        for (Unit.UnitView unitView : stateView.getAllUnits())
             peasantIdMap.putIfAbsent(i++, unitView.getID());
-        }
     }
 
     /**
      * Returns a SEPIA version of the specified Strips Action.
+     *
      * @param action StripsAction
      * @return SEPIA representation of same action
      */
@@ -139,31 +138,20 @@ public class PEAgent extends Agent {
             int id = peasantIdMap.get(action.getUnit(i).getID());
             switch (action.getType()) {
                 case MOVE:
-
-                    actionMap.put(id, Action.createCompoundMove(
-                            id,
-                            ((MoveK)action).targetPosition(i).x,
-                            ((MoveK)action).targetPosition(i).y
-                    ));
+                    actionMap.put(id, Action.createCompoundMove(id,
+                            ((MoveK)action).targetPosition(i).x, ((MoveK)action).targetPosition(i).y));
                     break;
                 case HARVEST:
-                        actionMap.put(id, Action.createPrimitiveGather(
-                                id,
-                                action.getUnit(i).getPosition().getDirection(
-                                        ((HarvestK) action).targetPosition(i))
-                        ));
+                        actionMap.put(id, Action.createPrimitiveGather(id,
+                                action.getUnit(i).getPosition().getDirection(((HarvestK) action).targetPosition(i))));
                     break;
                 case DEPOSIT:
-                    actionMap.put(id, Action.createPrimitiveDeposit(
-                            id,
-                            action.getUnit(i).getPosition().getDirection(
-                                    action.targetPosition())
-                    ));
+                    actionMap.put(id, Action.createPrimitiveDeposit(id,
+                            action.getUnit(i).getPosition().getDirection(action.targetPosition())));
                     break;
                 case BUILD:
                     actionMap.put(townhallId, Action.createPrimitiveBuild(townhallId, peasantTemplateId));
                     break;
-                default:
             }
         }
         return actionMap;

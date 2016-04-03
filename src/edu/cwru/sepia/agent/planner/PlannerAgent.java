@@ -11,6 +11,11 @@ import java.util.*;
 
 /**
  * Created by Devin on 3/15/15.
+ * Edited by Theodore and Nathaniel on 3/31/16
+ *
+ * This class is used to represent a planner agent. This relies partially on the functionality provided by the PEAgent
+ * class, and keeps track of specifics of the scenario such as required resources and whether building peasants is
+ * allowed. This class implements an A* search in order to design a game plan.
  */
 public class PlannerAgent extends Agent {
 
@@ -21,19 +26,28 @@ public class PlannerAgent extends Agent {
     // Your PEAgent implementation. This prevents you from having to parse the text file representation of your plan.
     PEAgent peAgent;
 
+    /**
+     * Construct a planner agent, taking into account the given specifications.
+     *
+     * @param playernum The player number associated with this planner agent
+     * @param params    A set of specifications for this planner agent, namely (1) the required amount of wood, (2) the
+     *                  required amount of gold, and (3) whether building peasants is allowed
+     */
     public PlannerAgent(int playernum, String[] params) {
         super(playernum);
 
-        if(params.length < 3) {
-            System.err.println("You must specify the required wood and gold amounts and whether peasants should be built");
-        }
+        if (params.length < 3)
+            System.err.println(
+                    "You must specify the required wood and gold amounts and whether peasants should be built");
 
         requiredWood = Integer.parseInt(params[0]);
         requiredGold = Integer.parseInt(params[1]);
         buildPeasants = Boolean.parseBoolean(params[2]);
 
-
-        System.out.println("required wood: " + requiredWood + " required gold: " + requiredGold + " build Peasants: " + buildPeasants);
+        System.out.println(
+                "Required Wood:  " + requiredWood + "\n" +
+                "Required Gold:  " + requiredGold + "\n" +
+                "Build Peasants: " + buildPeasants);
     }
 
     @Override
@@ -101,36 +115,40 @@ public class PlannerAgent extends Agent {
         //add nodes to the open list until the goal has been found
         while (!open.isEmpty()){
 
-            //heuristically determine which node to expand next
+            // Heuristically determine which node to expand next
             currentState = open.poll();
 
-            //the plan has been found, if at the goal node
+            // The plan has been found, if at the goal node
             if (currentState.isGoal()) return makePlan(currentState);
 
-            //add node to the open list if not in the closed or open list.
+            // Add node to the open list if not in the closed or open list.
             currentState.generateChildren().stream()
                     .filter(child -> !closed.contains(child))
                     .filter(child -> !open.contains(child))
                     .forEach(open::add);
 
             closed.add(currentState);
-
         }
 
-        return null;
+        return null;  // Should never return a null plan, hopefully
     }
 
-    private Stack<StripsAction> makePlan(GameState currentState) {
+    /**
+     * Make a strips action plan that achieves the specified goal state.
+     *
+     * @param goal The goal state from which to trace back
+     * @return A complete stack of strips actions that make up the plan
+     */
+    private Stack<StripsAction> makePlan(GameState goal) {
         Stack<StripsAction> plan = new Stack<>();
-        GameState parentState = currentState;
-        //go to each node's parent and add it to the stack of moves
-        while(parentState.getParent() != null){
-            plan.push(parentState.getActionFromParentToThis());
-            parentState = parentState.getParent();
+        GameState parent = goal;
+        // Go to each node's parent and add it to the stack of moves
+        while(parent.getParent() != null){
+            plan.push(parent.getActionFromParentToThis());
+            parent = parent.getParent();
         }
         return plan;
     }
-
 
     /**
      * This has been provided for you. Each strips action is converted to a string with the toString method. This means
