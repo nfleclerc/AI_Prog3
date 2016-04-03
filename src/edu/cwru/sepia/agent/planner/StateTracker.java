@@ -7,7 +7,6 @@ import edu.cwru.sepia.environment.model.state.State;
 import edu.cwru.sepia.environment.model.state.Unit;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +27,7 @@ public class StateTracker {
     private int currentFood;
     private boolean buildPeasants;
     private List<Peasant> peasants = new ArrayList<>();
-    private List<GoldMine> goldMines = new ArrayList<>();
+    private List<Goldmine> goldmines = new ArrayList<>();
     private List<Forest> forests = new ArrayList<>();
     private Townhall townhall;
     private GameState parent;
@@ -51,7 +50,7 @@ public class StateTracker {
         currentGold = stateTracker.currentGold;
         peasants.addAll(stateTracker.peasants.stream().map(Peasant::new).collect(Collectors.toList()));
         forests.addAll(stateTracker.forests.stream().map(Forest::new).collect(Collectors.toList()));
-        goldMines.addAll(stateTracker.goldMines.stream().map(GoldMine::new).collect(Collectors.toList()));
+        goldmines.addAll(stateTracker.goldmines.stream().map(Goldmine::new).collect(Collectors.toList()));
         townhall = new Townhall(stateTracker.getTownhall());
         this.parent = parent;
         currentFood = stateTracker.currentFood;
@@ -78,7 +77,7 @@ public class StateTracker {
         currentFood = 1;
         for (ResourceNode.ResourceView resource : state.getAllResourceNodes()) {
             if (resource.getType() == ResourceNode.Type.GOLD_MINE)
-                goldMines.add(new GoldMine(resource));
+                goldmines.add(new Goldmine(resource));
             else
                 forests.add(new Forest(resource));
         }
@@ -105,7 +104,7 @@ public class StateTracker {
                 currentWood == ((StateTracker) o).currentWood &&
                 currentGold == ((StateTracker) o).currentGold &&
                 peasants.equals(((StateTracker) o).peasants) &&
-                goldMines.equals(((StateTracker) o).goldMines) &&
+                goldmines.equals(((StateTracker) o).goldmines) &&
                 forests.equals(((StateTracker) o).forests) &&
                 townhall.equals(((StateTracker) o).townhall);
     }
@@ -115,7 +114,7 @@ public class StateTracker {
         return currentWood +
                 currentGold +
                 peasants.hashCode() +
-                goldMines.hashCode() +
+                goldmines.hashCode() +
                 forests.hashCode() +
                 townhall.hashCode();
     }
@@ -136,7 +135,7 @@ public class StateTracker {
      */
     public List<Resource> getAllResources() {
         List<Resource> resources = new ArrayList<>();
-        resources.addAll(goldMines);
+        resources.addAll(goldmines);
         resources.addAll(forests);
         return resources;
     }
@@ -209,10 +208,10 @@ public class StateTracker {
             if (goldNeeded()) {
                 // If there is a demand for gold, seek out the closest goldmine
                 if (peasant.getCargoAmount() == 0) {
-                    if (!goldMines.isEmpty()) {
+                    if (!goldmines.isEmpty()) {
                         // Compute distance to nearest nonempty goldmine, add to heuristic
-                        GoldMine goldMine = findClosestGoldMine(peasant);
-                        heuristic += goldMine.getPosition().chebyshevDistance(peasant.getPosition()) * 2;
+                        Goldmine goldmine = findClosestGoldMine(peasant);
+                        heuristic += goldmine.getPosition().chebyshevDistance(peasant.getPosition()) * 2;
                     }
                 } else {
                     // Compute distance to townhall, add to heuristic
@@ -265,18 +264,18 @@ public class StateTracker {
      * @param peasant The peasant of interest
      * @return The closest goldmine
      */
-    public GoldMine findClosestGoldMine(Peasant peasant) {
-        GoldMine closestGoldMine = goldMines.get(0);
+    public Goldmine findClosestGoldMine(Peasant peasant) {
+        Goldmine closestGoldmine = goldmines.get(0);
         int thisDistance, closestDistance;
 
-        for (GoldMine goldMine : goldMines) {
+        for (Goldmine goldmine : goldmines) {
 
-            thisDistance = goldMine.getPosition().chebyshevDistance(peasant.getPosition());
-            closestDistance = closestGoldMine.getPosition().chebyshevDistance(peasant.getPosition());
+            thisDistance = goldmine.getPosition().chebyshevDistance(peasant.getPosition());
+            closestDistance = closestGoldmine.getPosition().chebyshevDistance(peasant.getPosition());
 
-            if (thisDistance < closestDistance) closestGoldMine = goldMine;
+            if (thisDistance < closestDistance) closestGoldmine = goldmine;
         }
-        return closestGoldMine;
+        return closestGoldmine;
     }
 
     /**
@@ -290,7 +289,7 @@ public class StateTracker {
                 forests.remove(resource);
                 break;
             case GOLD:
-                goldMines.remove(resource);
+                goldmines.remove(resource);
                 break;
         }
     }
@@ -315,8 +314,8 @@ public class StateTracker {
      *
      * @return A list of goldmines
      */
-    public List<GoldMine> getGoldMines() {
-        return goldMines;
+    public List<Goldmine> getGoldmines() {
+        return goldmines;
     }
 
     /**

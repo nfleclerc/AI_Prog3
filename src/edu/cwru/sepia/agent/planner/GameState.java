@@ -159,7 +159,7 @@ public class GameState implements Comparable<GameState> {
                                 resource.getPosition().getAdjacentPositions(),
                                 closedPositions)).collect(Collectors.toList()));
             } else {
-                positions.addAll(stateTracker.getGoldMines().stream()
+                positions.addAll(stateTracker.getGoldmines().stream()
                         .filter(resource -> resource.getAmountRemaining() > 0)
                         .map(resource -> getBestPosition(peasant,
                                 resource.getPosition().getAdjacentPositions(),
